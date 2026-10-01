@@ -153,6 +153,7 @@
   .drink-card.fam-alcool{--fam-color:var(--coral);}
   .drink-card.fam-semalcool{--fam-color:var(--sea);}
   .drink-card.fam-energetico{--fam-color:var(--sun);}
+  .drink-card.fam-comida{--fam-color:var(--good);}
   .drink-card{
     background:var(--card); border:1px solid var(--line); border-top:5px solid var(--fam-color);
     border-radius:var(--radius-md); padding:13px; display:flex; flex-direction:column; gap:10px;
@@ -301,6 +302,13 @@
   .modal-section{margin-top:18px;}
   .modal-section h4{font-family:var(--font-body); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-dim); margin:0 0 8px;}
   .empty-note{padding:22px; text-align:center; color:var(--text-dim); font-size:14px;}
+  .entrega-toggle{
+    display:flex; align-items:center; gap:10px; cursor:pointer; font-weight:700; font-size:14px;
+    background:var(--card-2); border:1px solid var(--line); border-radius:var(--radius-md); padding:12px 14px;
+  }
+  .entrega-toggle input{width:17px; height:17px; accent-color:var(--sun-deep); cursor:pointer; flex:none;}
+  .entrega-toggle:focus-within{outline:2px solid var(--sea); outline-offset:2px;}
+  .entrega-note{font-weight:600; font-size:12px; color:var(--text-dim);}
 
   .icon-btn{width:32px; height:32px; border-radius:50%; border:1px solid var(--line); background:var(--card-2); color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px;}
   .icon-btn:hover{border-color:var(--sea);}
@@ -444,22 +452,26 @@
     { key:'outros', label:'Outros', icon:'📦', color:'var(--sun-deep)', items:[
       ['Frango',200],['Pão',210],['Queijo',60],['Ovos',200],['Fiambre',300],
       ['Açúcar',200],['Farinha',200],['Massa Folhada',200],['Azeite',210],
-      ['Chouriço',300],['Carne',200],['Presunto',300],['Leitão',300],['Leite',75]
+      ['Chouriço',300],['Carne',200],['Presunto',300],['Leitão',300],['Leite',75],
+      ['Grão de Café',150],['Chocolate',150],['Bola de Gelado',150],['Bolacha',135],
+      ['Gelatina',150],['Manteiga',150],['Óleo',225],['Tortilhas',150],['Maionese',165]
     ]},
     { key:'extras', label:'Extras', icon:'✨', color:'var(--violet)', items:[
-      ['Gelo',40],['Receita Secreta',20],['Grão de Café',150]
+      ['Gelo',40],['Receita Secreta',20]
     ]},
     { key:'bebidas', label:'Bebidas & Base', icon:'🍾', color:'var(--sea)', items:[
-      ['Alchool',500],['Garrafão de Água',10],['Cerveja',80],['Água Tónica',30]
+      ['Alchool',500],['Garrafão de Água',10],['Cerveja',80],['Água Tónica',30],
+      ['Ice Tea Limão',100],['Sumol de Laranja',90]
     ]}
   ];
 
   var FAM_META = {
     alcool:{ label:'Bebidas Com Álcool', icon:'🍸' },
     semalcool:{ label:'Bebidas Sem Álcool', icon:'🥤' },
-    energetico:{ label:'Energéticos', icon:'⚡' }
+    energetico:{ label:'Energéticos', icon:'⚡' },
+    comida:{ label:'Comida', icon:'🍲' }
   };
-  var FAM_ORDER = ['alcool','semalcool','energetico'];
+  var FAM_ORDER = ['alcool','semalcool','energetico','comida'];
 
   var RECIPES = [
     { id:'vodka', n:'Vodka', icon:'🥃', fam:'alcool', ing:[['Alchool',1],['Batata',1],['Garrafão de Água',1]] },
@@ -471,17 +483,19 @@
     { id:'junk-blue', n:'Junk Blue', icon:'⚡', fam:'energetico', ing:[['Açúcar',1],['Garrafão de Água',1],['Mirtilo',2],['Grão de Café',2]] },
     { id:'junk-green', n:'Junk Green', icon:'⚡', fam:'energetico', ing:[['Açúcar',1],['Garrafão de Água',1],['Pera da Horta',2],['Grão de Café',2]] },
     { id:'junk-orange', n:'Junk Orange', icon:'⚡', fam:'energetico', ing:[['Açúcar',1],['Garrafão de Água',1],['Laranja',3],['Grão de Café',3]] },
+    { id:'junk-purple', n:'Junk Purple', icon:'⚡', fam:'energetico', ing:[['Banana',3],['Garrafão de Água',3],['Açúcar',3],['Manga',5],['Grão de Café',8]] },
     { id:'junk-red', n:'Junk Red', icon:'⚡', fam:'energetico', ing:[['Açúcar',2],['Garrafão de Água',2],['Morango',6],['Grão de Café',6]] },
-	    { id:'junk-purple', n:'Junk Purple', icon:'⚡', fam:'energetico', ing:[['Banana',3],['Garrafão de Água',3],['Açúcar',3],['Manga',5],['Grão de Café',8]] },
     { id:'absinto', n:'Absinto', icon:'🍸', fam:'alcool', ing:[['Folhas de Chá',1],['Alchool',1],['Açúcar',1],['Garrafão de Água',1]] },
     { id:'tequilla', n:'Tequilla', icon:'🥃', fam:'alcool', ing:[['Alchool',1],['Pera da Horta',1],['Garrafão de Água',1]] },
     { id:'utopal', n:'Utopal de Frutos Vermelhos', icon:'🍷', fam:'semalcool', ing:[['Ananas',1],['Açúcar',1],['Receita Secreta',1],['Garrafão de Água',1]] },
     { id:'gin', n:'Gin', icon:'🍸', fam:'alcool', ing:[['Gelo',1],['Alchool',1],['Coentros',1],['Garrafão de Água',1]] },
-    { id:'pinacolada', n:'Pina Colada', icon:'🍍', fam:'alcool', ing:[['Garrafão de Água',1],['Ananas',1],['Alchool',1],['Coco',1],['Gelo',1]] },
-    { id:'margarita', n:'Margarita', icon:'🍸', fam:'alcool', ing:[['Garrafão de Água',1],['Ananas',1],['Alchool',1],['Gelo',1],['Açúcar',1]] }
+    { id:'pina-colada', n:'Pina Colada', icon:'🍍', fam:'alcool', ing:[['Garrafão de Água',1],['Ananas',1],['Alchool',1],['Coco',1],['Gelo',1]] },
+    { id:'margarita', n:'Margarita', icon:'🍸', fam:'alcool', ing:[['Garrafão de Água',1],['Ananas',1],['Alchool',1],['Gelo',1],['Açúcar',1]] },
+    { id:'santali-pera', n:'Santali de Pera', icon:'🍐', fam:'semalcool', ing:[['Manga',2],['Laranja',2],['Gelo',3],['Limão',3],['Açúcar',3],['Garrafão de Água',4],['Pera da Horta',6]] },
+    { id:'sopa-cenoura', n:'Sopa de Cenoura', icon:'🥕', fam:'comida', ing:[['Pimenta',2],['Pão',2],['Garrafão de Água',2],['Azeite',2],['Batata',3],['Alho',3],['Cebola',4],['Cenoura',6]] }
   ];
 
-  var UNPRICED = { 'grao de cafe':false };
+  var UNPRICED = {};
 
   function norm(s){
     return s.toLowerCase()
@@ -516,24 +530,26 @@
 
   /* Preços de venda ao público (menu oficial do bar) */
   var DEFAULT_VENDA = {
-    vodka:1500, whiskey:1500, caipirinha:1500, absinto:1500, gin:1500, champagne:1500, tequilla:1500, pinacolada:1500, margarita:1500,
-    'uto-cola':1200, sumol:1300, utopal:1300,
+    vodka:1500, whiskey:1500, caipirinha:1500, absinto:1500, gin:1500,
+    'uto-cola':1200, sumol:1200, utopal:1200,
     'junk-green':2000, 'junk-blue':2500, 'junk-orange':3000, 'junk-red':4000, 'junk-purple':5000
   };
 
   var MALA_SEGURA_VALOR = 500000;
 
   /* ---------- State ---------- */
-  var state = { qty:{}, venda:{}, launder:{ valor:0, pct:12.5 } };
+  var ENTREGA_PCT = 10;
+  var state = { qty:{}, venda:{}, launder:{ valor:0, pct:12.5 }, entrega:false };
   RECIPES.forEach(function(r){ state.qty[r.id] = 0; state.venda[r.id] = (r.id in DEFAULT_VENDA) ? DEFAULT_VENDA[r.id] : null; });
   var hiddenCats = {};
 
-  function snapshot(){ return { qty: state.qty, venda: state.venda, hiddenCats: hiddenCats, launder: state.launder }; }
+  function snapshot(){ return { qty: state.qty, venda: state.venda, hiddenCats: hiddenCats, launder: state.launder, entrega: state.entrega }; }
   function restore(data){
     if (data && data.qty) { Object.keys(data.qty).forEach(function(k){ if (k in state.qty) state.qty[k] = data.qty[k]; }); }
     if (data && data.venda) { Object.keys(data.venda).forEach(function(k){ if (k in state.venda) state.venda[k] = data.venda[k]; }); }
     if (data && data.hiddenCats) { hiddenCats = data.hiddenCats; }
     if (data && data.launder) { state.launder = data.launder; }
+    if (data && typeof data.entrega === 'boolean') { state.entrega = data.entrega; }
   }
 
   function renderHeroStats(){
@@ -542,7 +558,7 @@
     document.getElementById('heroStats').innerHTML =
       '<span class="hero-stat"><b>' + RECIPES.length + '</b> receitas</span>' +
       '<span class="hero-stat"><b>' + ingredientCount + '</b> ingredientes em stock</span>' +
-      '<span class="hero-stat"><b>4</b> categorias</span>';
+      '<span class="hero-stat"><b>' + CATS.length + '</b> categorias</span>';
   }
 
   function ingLabel(name, n){
@@ -586,7 +602,7 @@
     );
   }
 
-  var FAM_COLOR = { alcool:'var(--coral)', semalcool:'var(--sea)', energetico:'var(--sun-deep)' };
+  var FAM_COLOR = { alcool:'var(--coral)', semalcool:'var(--sea)', energetico:'var(--sun-deep)', comida:'var(--good)' };
   var RECIPE_BY_ID = {};
   RECIPES.forEach(function(r){ RECIPE_BY_ID[r.id] = r; });
 
@@ -755,6 +771,15 @@
       return '<tr><td>' + it.label + '</td><td class="num">' + it.qty + '</td><td class="num">' + (priced ? euro(it.price) : '—') + '</td><td class="num">' + sub + '</td></tr>';
     }).join('');
 
+    var entregaOn = !!state.entrega;
+    var entregaValor = entregaOn ? vendaTotal * (ENTREGA_PCT / 100) : 0;
+    var vendaFinal = vendaTotal + entregaValor;
+    var lucroFinal = lucroTotal + entregaValor;
+
+    var entregaStat = entregaOn
+      ? '<span class="hero-stat" style="background:var(--card-2); border-color:var(--line); color:var(--text);">Taxa de entrega <b class="tabular" style="color:var(--coral-deep);">+' + euro(entregaValor) + '</b></span>'
+      : '';
+
     return (
       '<div class="modal-section">' +
         '<h4>Receitas a preparar</h4>' +
@@ -771,11 +796,19 @@
         '</table></div>' +
       '</div>' +
       '<div class="modal-section">' +
+        '<h4>Entrega</h4>' +
+        '<label class="entrega-toggle">' +
+          '<input type="checkbox" id="modalEntrega"' + (entregaOn ? ' checked' : '') + '> ' +
+          'Entrega ao local <span class="entrega-note">(+' + ENTREGA_PCT + '% sobre o valor de venda)</span>' +
+        '</label>' +
+      '</div>' +
+      '<div class="modal-section">' +
         '<h4>Totais</h4>' +
         '<div class="hero-stats" style="margin-top:0;">' +
           '<span class="hero-stat" style="background:var(--card-2); border-color:var(--line); color:var(--text);">Custo <b class="tabular" style="color:var(--sun-deep);">' + euro(custoTotal) + '</b></span>' +
-          '<span class="hero-stat" style="background:var(--card-2); border-color:var(--line); color:var(--text);">Venda <b class="tabular" style="color:var(--sun-deep);">' + euro(vendaTotal) + '</b></span>' +
-          '<span class="hero-stat" style="background:var(--card-2); border-color:var(--line); color:var(--text);">Lucro <b class="tabular" style="color:var(--good);">' + (lucroTotal>=0?'+':'') + euro(lucroTotal) + '</b></span>' +
+          '<span class="hero-stat" style="background:var(--card-2); border-color:var(--line); color:var(--text);">Venda <b class="tabular" style="color:var(--sun-deep);">' + euro(vendaFinal) + '</b></span>' +
+          entregaStat +
+          '<span class="hero-stat" style="background:var(--card-2); border-color:var(--line); color:var(--text);">Lucro <b class="tabular" style="color:var(--good);">' + (lucroFinal>=0?'+':'') + euro(lucroFinal) + '</b></span>' +
         '</div>' +
       '</div>'
     );
@@ -843,9 +876,20 @@
     renderLaunder();
   }
 
+  function wireModalEntrega(){
+    var cb = document.getElementById('modalEntrega');
+    if (!cb) return;
+    cb.addEventListener('change', function(){
+      state.entrega = cb.checked;
+      document.getElementById('modalBody').innerHTML = buildList();
+      wireModalEntrega();
+    });
+  }
+
   function openModal(){
     document.getElementById('modalBody').innerHTML = buildList();
     document.getElementById('modalVeil').hidden = false;
+    wireModalEntrega();
   }
   function closeModal(){ document.getElementById('modalVeil').hidden = true; }
 
