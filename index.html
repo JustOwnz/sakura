@@ -237,6 +237,9 @@ textarea.fb{width:100%;height:130px;margin-top:8px;font:12px var(--mono);backgro
 var MARGEM_PADRAO = 50;   // % de lucro aplicada a todos os pratos (só se muda aqui)
 var TAXA_ENTREGA  = 10;   // % que a loja cobra para entregar no restaurante
 
+// Categorias compradas noutro sítio: na lista de compras saem num botão de copiar à parte
+var COMPRA_SEPARADA = [ "🐟 Peixe · Parceria" ];
+
 
 /* ---------- INGREDIENTES (preço de compra por unidade) ---------- */
 var INGREDIENTES = {
@@ -597,7 +600,8 @@ function buildList(){
       (state.entrega?'<tr><td>Taxa de entrega da loja</td><td class="num">− '+euro(entregaV)+'</td></tr>':'')+
       '<tr class="grand"><td>Lucro</td><td class="num">'+signed(lucroF)+'</td></tr>'+
     '</tbody></table></div></div>'+
-    '<div class="mactions"><button class="btn btn-accent" type="button" id="mCopy">Copiar lista de compras</button>'+
+    '<div class="mactions"><button class="btn btn-accent" type="button" id="mCopy">Copiar compras (Quinta e Loja)</button>'+
+      '<button class="btn btn-accent" type="button" id="mCopyFish">Copiar peixe</button>'+
       '<button class="btn" type="button" id="mCopyMenu">Copiar menu com preços</button></div><div class="toast" id="toast"></div>';
 }
 
@@ -606,13 +610,18 @@ function B(s){return Array.from(s.normalize("NFD")).map(function(c){
   if(c>="A"&&c<="Z")return String.fromCodePoint(0x1D400+c.charCodeAt(0)-65);
   if(c>="a"&&c<="z")return String.fromCodePoint(0x1D41A+c.charCodeAt(0)-97);return c}).join("")}
 var SEP="⊱⋅ ▬▬▬▬▬▬▬▬▬▬▬▬ ⋅⊰";
-function orderText(){
-  var sel=RECIPES.filter(function(r){return state.qty[r.id]>0}),t=totals(),ings=needList(sel);
-  var e=state.entrega?t.custo*ENTREGA_PCT/100:0;
-  var s="◆ ▬▬▬▬▬▬ "+B("Compras Sakura")+" ▬▬▬▬▬▬ ◆\n"+
-    ings.map(function(it){return it.qty+"x "+it.label+(it.price===null?" — sem preço":" — "+euro(it.price*it.qty))}).join("\n")+"\n"+SEP+"\n"+
-    B("Total")+"\nIngredientes: "+euro(t.custo)+(state.entrega?"\nEntrega ("+ENTREGA_PCT+"%): "+euro(e):"")+"\nTotal a pagar: "+euro(t.custo+e)+"\n"+SEP;
-  return "```\n"+s+"\n```";
+/* Lista de compras: "Ingrediente - quantidade", pela ordem da configuração.
+   separado=true -> só as categorias de COMPRA_SEPARADA; false -> o resto */
+function shoppingText(separado){
+  var sel=RECIPES.filter(function(r){return state.qty[r.id]>0}),need={};
+  needList(sel).forEach(function(it){need[norm(it.label)]=it.qty});
+  var sep={};COMPRA_SEPARADA.forEach(function(c){sep[slugify(splitIcon(c).label)]=true});
+  var lines=[];
+  CATS.forEach(function(c){
+    if(!!sep[c.key]!==separado)return;
+    c.items.forEach(function(it){var q=need[norm(it[0])];if(q)lines.push(it[0]+" - "+q)});
+  });
+  return lines.join("\n");
 }
 function menuText(){
   var s="◆ ▬▬▬▬▬▬ "+B("Menu Sakura")+" ▬▬▬▬▬▬ ◆\n";
@@ -622,13 +631,14 @@ function menuText(){
 function toast(m){var el=document.getElementById("toast");if(!el)return;el.textContent=m;clearTimeout(toast.t);toast.t=setTimeout(function(){el.textContent=""},2500)}
 function copy(txt){
   function fb(){var ta=document.querySelector("textarea.fb");if(!ta){ta=document.createElement("textarea");ta.className="fb";ta.readOnly=true;document.getElementById("toast").after(ta)}ta.value=txt;ta.select();toast("Seleciona e copia o texto abaixo.")}
-  try{navigator.clipboard.writeText(txt).then(function(){toast("Copiado. Cola no Discord.")},fb)}catch(e){fb()}
+  try{navigator.clipboard.writeText(txt).then(function(){toast("Copiado.")},fb)}catch(e){fb()}
 }
 
 function wireModal(){
   var cb=document.getElementById("mEntrega");
   if(cb)cb.addEventListener("change",function(){state.entrega=cb.checked;save();renderFooter();openModal()});
-  var c1=document.getElementById("mCopy");if(c1)c1.addEventListener("click",function(){copy(orderText())});
+  var c1=document.getElementById("mCopy");if(c1)c1.addEventListener("click",function(){var t=shoppingText(false);if(t)copy(t);else toast("Não há nada a comprar fora do peixe.")});
+  var c3=document.getElementById("mCopyFish");if(c3)c3.addEventListener("click",function(){var t=shoppingText(true);if(t)copy(t);else toast("Não há peixe nesta lista.")});
   var c2=document.getElementById("mCopyMenu");if(c2)c2.addEventListener("click",function(){copy(menuText())});
 }
 function openModal(){document.getElementById("modalBody").innerHTML=buildList();document.getElementById("veil").hidden=false;wireModal()}
