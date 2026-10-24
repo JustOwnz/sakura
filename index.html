@@ -2,364 +2,184 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bar Bahamas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cozinha Sakura</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
-  /* ---------- Tokens ---------- */
-  :root{
-    --bg:#F2E4C4; --bg-2:#E9D9AE;
-    --card:#FFFDF7; --card-2:#FFF6E1;
-    --line:#E3D2A0;
-    --text:#152F36; --text-dim:#5C7679;
-    --sea:#0E9DA6; --sea-deep:#0A6670;
-    --sun:#FFB23E; --sun-deep:#C98317;
-    --coral:#FF6F59; --coral-deep:#D9503C;
-    --good:#0F9C79; --good-bg:#DFF3EC;
-    --bad:#C0453A; --violet:#8B6FB0;
-    --ink-on-accent:#152018;
-    --shadow:0 14px 32px -16px rgba(20,45,45,.28);
-    --radius-lg:20px; --radius-md:14px; --radius-sm:9px;
-    --font-display:'Bungee','Arial Narrow',sans-serif;
-    --font-body:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-  }
-  /* Visual fixo: o Bar Bahamas mantém sempre o tema claro/pôr-do-sol,
-     independentemente do modo claro/escuro do dispositivo de quem o abre. */
+/* Layout (igual ao Bar Bahamas): banner + stats; receitas em famílias (2/3) | stock de ingredientes (1/3); barra de totais fixa em baixo; lista de preparação em modal.
+   Visual fixo: o Sakura mantém sempre o tema pêssego/rosa, em modo claro ou escuro. */
+:root{
+  --bg:#f2c690; --bg-2:#ebb87d;
+  --card:#fff7f8; --card-2:#fbe3e6;
+  --line:#efc3cc;
+  --text:#5a1f33; --text-dim:#9a5a6c;
+  --rose:#e2708c; --rose-deep:#c9506f; --plum:#8b2a48;
+  --peach:#f0a868; --matcha:#5e8a4f; --sea:#4f86a8; --gold:#b8862e;
+  --good:#2f7a4f; --bad:#b4371f;
+  --on-accent:#fff6f7;
+  --shadow:0 14px 30px -16px rgba(90,31,51,.35);
+  --display:"Russo One","Arial Black",Impact,sans-serif;
+  --body:"M PLUS Rounded 1c",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:20px calc(120px + env(safe-area-inset-bottom,0px));overflow-x:hidden}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+.tab{font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;position:relative;z-index:1}
 
-  *{box-sizing:border-box;}
-  html{-webkit-text-size-adjust:100%;}
-  body{
-    margin:0;
-    background-color:var(--bg);
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-repeat:repeat;
-    background-size:180px 180px;
-    color:var(--text);
-    font-family:var(--font-body);
-    padding-inline:20px;
-    padding-block:0 108px;
-  }
-  a{color:inherit;}
-  h1,h2,h3{font-family:var(--font-display); font-weight:400; text-wrap:balance; letter-spacing:.01em; margin:0;}
-  .mono{font-family:var(--font-mono);}
-  .tabular{font-variant-numeric:tabular-nums;}
+/* Hero */
+.banner{display:block;width:100%;max-width:100%;height:auto;border-radius:16px;box-shadow:6px 6px 0 var(--plum)}
+.hero-sub{margin:18px 0 0;max-width:62ch;font-weight:500;line-height:1.55}
+.hero-stats{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px}
+.pill{background:var(--card);border:1px solid var(--line);padding:6px 12px;border-radius:999px}
+.pill b{color:var(--rose-deep)}
 
-  .wrap{max-width:1180px; margin:0 auto;}
+/* Layout */
+.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:22px;margin-top:22px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px 12px;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--card-2);flex-wrap:wrap}
+.panel-head h2{font-family:var(--display);font-weight:400;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:var(--rose);text-shadow:2px 2px 0 var(--plum)}
+.count{font-family:var(--mono);font-size:12px;color:var(--text-dim)}
+.panel-body{padding:16px}
+.head-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
-  /* ---------- Hero ---------- */
-  .hero{
-    position:relative;
-    margin-inline:-20px;
-    padding:40px 20px 60px;
-    background:
-      linear-gradient(112deg, rgba(5,32,36,.74) 0%, rgba(5,32,36,.32) 40%, rgba(5,32,36,0) 66%),
-      linear-gradient(180deg, #FFE2A1 0%, #FFB679 19%, #FF8E6A 35%, #2FB6BE 63%, #0B6670 100%);
-    color:#FFF8E8;
-    overflow:hidden;
-  }
-  .hero-palms{position:absolute; inset:0; opacity:.9; pointer-events:none;}
-  .hero-stamp{position:absolute; top:8px; right:0; width:150px; height:150px; opacity:.8; transform:rotate(-7deg); pointer-events:none;}
-  .hero-eyebrow{
-    position:relative; display:inline-block;
-    font-family:var(--font-mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase;
-    color:#FFF3DC; opacity:.85;
-  }
-  h1.title{
-    position:relative;
-    font-size:clamp(34px, 6.6vw, 66px);
-    line-height:1.02;
-    margin-top:16px;
-    max-width:11ch;
-    color:#FFFBF0;
-    text-shadow:0 3px 20px rgba(4,20,22,.45);
-  }
-  h1.title em{
-    font-style:normal;
-    color:#FFFBF0;
-    text-shadow:0 3px 20px rgba(4,20,22,.5), 0 0 30px rgba(255,216,107,.35);
-  }
-  .hero-sub{
-    position:relative;
-    margin-top:10px;
-    max-width:56ch;
-    color:#FFF3DC;
-    font-size:15px;
-    line-height:1.55;
-    text-shadow:0 1px 8px rgba(4,20,22,.3);
-  }
-  .hero-stats{position:relative; margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; font-family:var(--font-mono); font-size:13px;}
-  .hero-stat{background:rgba(5,32,36,.42); border:1px solid rgba(255,248,232,.3); color:#FFF8E8; padding:7px 12px; border-radius:999px;}
-  .hero-stat b{color:var(--sun); font-weight:700;}
+.btn{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-weight:800;font-size:13px;padding:8px 13px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--rose-deep)}
+.btn-accent{background:var(--rose);border-color:transparent;color:var(--on-accent);box-shadow:0 3px 0 var(--plum)}
+.btn-accent:active{transform:translateY(2px);box-shadow:0 1px 0 var(--plum)}
+button:focus-visible,input:focus-visible,summary:focus-visible,label:focus-within{outline:2px solid var(--plum);outline-offset:2px}
 
-  .wave{display:block; width:100%; height:26px; margin-top:-2px;}
+/* Margem */
+.margin-box{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:800}
+.margin-box input{width:56px;border:0;background:var(--card-2);border-radius:999px;color:var(--rose-deep);font-family:var(--mono);font-weight:700;font-size:14px;text-align:right;padding:4px 8px}
+.margin-box span{font-family:var(--mono);color:var(--rose-deep)}
 
-  /* ---------- Layout ---------- */
-  .grid{display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:22px; margin-top:26px; align-items:start;}
-  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+/* Famílias */
+.fam{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card-2)}
+.fam + .fam{margin-top:12px}
+.fam > summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;font-weight:800;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--fc);padding:12px 14px}
+.fam > summary::-webkit-details-marker{display:none}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--fc);flex:none}
+.fam-count{font-family:var(--mono);color:var(--text-dim);text-transform:none;letter-spacing:0;font-weight:600;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+.fam-sel{font-family:var(--mono);color:var(--on-accent);text-transform:none;letter-spacing:0;font-weight:700;background:var(--fc);border-radius:999px;padding:1px 9px;font-size:11px}
+.chev{margin-left:auto;font-size:12px;color:var(--text-dim);transition:transform .18s}
+.fam[open] .chev{transform:rotate(180deg)}
+.fam-body{padding:0 14px 14px;background:var(--card)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:12px;padding-top:14px}
 
-  .panel{background:var(--card); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow); overflow:hidden;}
-  .panel-head{
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    padding:16px 18px; border-bottom:1px solid var(--line); background:var(--card-2); flex-wrap:wrap;
-  }
-  .panel-head h2{font-size:19px; letter-spacing:.01em; display:flex; align-items:center; gap:9px;}
-  .panel-head .count{font-family:var(--font-mono); font-size:12px; color:var(--text-dim); letter-spacing:.04em;}
-  .panel-body{padding:18px;}
+.card{background:var(--card);border:1px solid var(--line);border-top:5px solid var(--fc);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:9px}
+.card.on{box-shadow:4px 4px 0 var(--plum);border-color:var(--fc)}
+.top{display:flex;align-items:center;gap:10px}
+.ico{width:36px;height:36px;flex:none;border-radius:10px;font-size:18px;display:flex;align-items:center;justify-content:center;
+  background:color-mix(in srgb,var(--fc) 18%,var(--card));border:1px solid color-mix(in srgb,var(--fc) 35%,var(--line))}
+.name{font-weight:800;font-size:14.5px;line-height:1.2}
+.desc{font-size:11.5px;color:var(--text-dim);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-family:var(--mono);font-size:11px;color:var(--text-dim);background:var(--card-2);border:1px solid var(--line);padding:2px 7px;border-radius:999px;white-space:nowrap}
+.chip.unpriced{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding-top:6px;border-top:1px dashed var(--line)}
+.stat{display:flex;flex-direction:column;gap:2px;min-width:0}
+.k{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);font-weight:700}
+.v{font-family:var(--mono);font-weight:700;font-size:13px}
+.v.venda{color:var(--rose-deep)}
+.v.pos{color:var(--good)}
+.v.neg{color:var(--bad)}
+.v.pend{color:var(--text-dim);font-family:var(--body);font-size:11.5px;font-weight:700}
+.eur{display:inline-flex;align-items:center;border:1.5px solid var(--rose);border-radius:8px;background:var(--card-2);max-width:100%}
+.eur input{width:68px;min-width:0;border:0;background:transparent;color:var(--rose-deep);font-family:var(--mono);font-weight:700;font-size:13px;text-align:right;padding:3px 4px}
+.eur span{padding:0 7px 0 1px;font-family:var(--mono);font-weight:700;color:var(--rose-deep);font-size:12px}
+.stepper{display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--card-2);border:1px solid var(--line);border-radius:999px;padding:4px}
+.stepper button{width:28px;height:28px;border-radius:50%;border:none;cursor:pointer;flex:none;background:var(--card);color:var(--text);font-size:15px;font-weight:800;box-shadow:0 1px 0 var(--line)}
+.stepper button:hover{background:var(--fc);color:var(--on-accent)}
+.stepper input{width:100%;min-width:0;text-align:center;border:none;background:transparent;color:var(--text);font-family:var(--mono);font-weight:700;font-size:14px}
 
-  .btn{
-    appearance:none; border:1px solid var(--line); background:var(--card);
-    color:var(--text); font-family:var(--font-body); font-weight:700; font-size:13px;
-    padding:8px 13px; border-radius:999px; cursor:pointer;
-    display:inline-flex; align-items:center; gap:6px;
-    transition:transform .12s ease, border-color .12s ease;
-  }
-  .btn:hover{transform:translateY(-1px); border-color:var(--sea);}
-  .btn:active{transform:translateY(0);}
-  .btn:focus-visible{outline:2px solid var(--sea); outline-offset:2px;}
-  .btn-ghost{background:transparent;}
-  .btn-accent{background:var(--sun); border-color:transparent; color:var(--ink-on-accent); font-weight:800;}
-  .btn-accent:hover{filter:brightness(1.05);}
+/* Stock */
+.stock-search{padding:14px 18px 10px;border-bottom:1px solid var(--line)}
+.stock-search input{width:100%;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card-2);color:var(--text);font:inherit;font-size:13.5px}
+.stock-chips{display:flex;flex-wrap:wrap;gap:7px;padding:10px 18px 14px;border-bottom:1px solid var(--line)}
+.cat-chip{appearance:none;cursor:pointer;font:inherit;font-weight:800;font-size:11.5px;padding:6px 11px;border-radius:8px 8px 8px 2px;border:1.5px dashed var(--cc);background:transparent;color:var(--cc);display:inline-flex;align-items:center;gap:5px}
+.cat-chip[aria-pressed="true"]{background:var(--cc);color:var(--on-accent);border-style:solid}
+.stock-scroll{max-height:560px;overflow-y:auto}
+.stock-head{position:sticky;top:0;z-index:1;padding:8px 18px;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--text-dim);background:var(--card-2);border-block:1px solid var(--line)}
+.row{display:flex;align-items:baseline;gap:8px;padding:7px 18px;font-size:13.5px}
+.row .n{white-space:nowrap}
+.row .dots{flex:1;border-bottom:2px dotted var(--line);transform:translateY(-4px);min-width:14px}
+.row .p{font-family:var(--mono);font-weight:700;color:var(--rose-deep);white-space:nowrap}
+.row .p.none{color:var(--bad)}
+.note{margin:0;padding:12px 18px;font-size:12px;color:var(--text-dim);background:var(--card-2);border-top:1px solid var(--line);line-height:1.5}
+.empty{padding:22px;text-align:center;color:var(--text-dim);font-size:14px}
 
-  /* ---------- Recipe families & cards ---------- */
-  .fam-section{border:1px solid var(--line); border-radius:var(--radius-md); overflow:hidden; background:var(--card-2);}
-  .fam-section + .fam-section{margin-top:12px;}
-  .fam-section > summary{
-    display:flex; align-items:center; gap:8px; cursor:pointer; list-style:none;
-    font-family:var(--font-body); font-weight:800; font-size:12.5px;
-    letter-spacing:.1em; text-transform:uppercase; color:var(--fam-color);
-    padding:12px 14px; -webkit-tap-highlight-color:transparent;
-  }
-  .fam-section > summary::-webkit-details-marker{display:none;}
-  .fam-section > summary:focus-visible{outline:2px solid var(--sea); outline-offset:-2px;}
-  .fam-section .fam-dot{width:9px; height:9px; border-radius:50%; background:var(--fam-color); flex:none;}
-  .fam-section .fam-count{
-    font-family:var(--font-mono); color:var(--text-dim); text-transform:none; letter-spacing:0;
-    font-weight:600; background:var(--card); border:1px solid var(--line); border-radius:999px; padding:1px 8px;
-  }
-  .fam-section .fam-selected{
-    font-family:var(--font-mono); color:var(--ink-on-accent); text-transform:none; letter-spacing:0;
-    font-weight:700; background:var(--fam-color); border-radius:999px; padding:1px 9px; font-size:11px;
-  }
-  .fam-section .fam-selected[hidden]{display:none;}
-  .fam-section .fam-chevron{margin-left:auto; font-size:12px; color:var(--text-dim); transition:transform .18s ease; flex:none;}
-  .fam-section[open] .fam-chevron{transform:rotate(180deg);}
-  .fam-section .drink-grid-wrap{padding:0 14px 14px; background:var(--card);}
-  .drink-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(238px,1fr)); gap:13px; padding-top:14px;}
-  @media (prefers-reduced-motion: reduce){ .fam-section .fam-chevron{transition:none;} }
+/* Barra de totais */
+.footer{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--plum);border-top:3px solid var(--rose);box-shadow:0 -14px 30px -18px rgba(0,0,0,.45);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+.footer-in{max-width:1180px;margin:0 auto;padding-block:12px;display:flex;align-items:center;gap:14px 18px;flex-wrap:wrap;justify-content:space-between}
+.totals{display:flex;gap:18px;flex-wrap:wrap}
+.tcell{font-size:12px;color:rgba(255,240,244,.75);display:flex;flex-direction:column;gap:2px}
+.tcell b{font-family:var(--mono);font-size:15px;color:#fff6f7;font-weight:700}
+.tcell.good b{color:var(--bg)}
+.footer .btn-accent{background:var(--bg);color:var(--plum);box-shadow:0 3px 0 #4a1426}
 
-  .drink-card.fam-alcool{--fam-color:var(--coral);}
-  .drink-card.fam-semalcool{--fam-color:var(--sea);}
-  .drink-card.fam-energetico{--fam-color:var(--sun);}
-  .drink-card.fam-comida{--fam-color:var(--good);}
-  .drink-card{
-    background:var(--card); border:1px solid var(--line); border-top:5px solid var(--fam-color);
-    border-radius:var(--radius-md); padding:13px; display:flex; flex-direction:column; gap:10px;
-  }
-  .drink-top{display:flex; align-items:center; gap:10px;}
-  .drink-icon{
-    width:36px; height:36px; flex:none; border-radius:10px; font-size:17px;
-    background:color-mix(in srgb, var(--fam-color) 20%, var(--card));
-    border:1px solid color-mix(in srgb, var(--fam-color) 35%, var(--line));
-    display:flex; align-items:center; justify-content:center;
-  }
-  .drink-name{font-weight:800; font-size:14.5px; line-height:1.2;}
-  .chips{display:flex; flex-wrap:wrap; gap:5px;}
-  .chip{
-    font-family:var(--font-mono); font-size:11px; color:var(--text-dim);
-    background:var(--card-2); border:1px solid var(--line); padding:2px 7px; border-radius:999px; white-space:nowrap;
-  }
-  .chip.unpriced{color:var(--coral-deep); border-color:color-mix(in srgb, var(--coral) 40%, var(--line));}
+/* Modal */
+.veil{position:fixed;inset:0;background:rgba(40,10,22,.55);backdrop-filter:blur(2px);display:flex;align-items:flex-end;justify-content:center;z-index:40}
+.modal{width:100%;max-width:780px;max-height:min(84vh,760px);overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:20px 20px 0 0;box-shadow:var(--shadow);padding:20px max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
+@media (min-width:640px){.veil{align-items:center}.modal{border-radius:18px;margin:20px}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.modal-head h3{font-family:var(--display);font-weight:400;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--rose);text-shadow:2px 2px 0 var(--plum)}
+.icon-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card-2);color:var(--text);cursor:pointer;font-size:16px}
+.msec{margin-top:18px}
+.msec h4{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin:0 0 8px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);padding:7px 9px;border-bottom:1px solid var(--line);background:var(--card-2)}
+td{padding:8px 9px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-family:var(--mono);white-space:nowrap}
+td.miss{color:var(--bad)}
+tr.grand td{font-weight:800;font-size:15px;color:var(--plum);background:var(--card-2)}
+.toggle{display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:800;font-size:14px;background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.toggle input{width:17px;height:17px;accent-color:var(--rose-deep);flex:none}
+.toggle small{font-weight:600;font-size:12px;color:var(--text-dim)}
+.sum{display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:13px}
+.sum .pill{background:var(--card-2)}
+.sum .pill.g b{color:var(--good)}
+.sum .pill.d b{color:var(--peach)}
+.mactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.toast{font-size:12.5px;min-height:18px;margin-top:8px;color:var(--good);font-weight:700}
+textarea.fb{width:100%;height:130px;margin-top:8px;font:12px var(--mono);background:var(--card-2);color:var(--text);border:1px solid var(--line);border-radius:8px}
 
-  .drink-stats{display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; padding-top:2px; border-top:1px dashed var(--line);}
-  .drink-stats .stat{display:flex; flex-direction:column; gap:2px; min-width:0;}
-  .drink-stats .k{font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-dim);}
-  .drink-stats .v{font-family:var(--font-mono); font-weight:700; font-size:13px;}
-  .venda-value{display:block;}
-  .venda-value.empty{color:var(--text-dim); font-weight:600; font-size:11px; font-family:var(--font-body);}
-  .lucro{font-family:var(--font-mono); font-weight:700;}
-  .lucro.pos{color:var(--good);}
-  .lucro.neg{color:var(--bad);}
-  .lucro.pending{color:var(--text-dim); font-weight:600; font-size:11px; font-family:var(--font-body);}
-
-  .stepper{
-    display:flex; align-items:center; justify-content:space-between; gap:6px;
-    background:var(--card-2); border:1px solid var(--line); border-radius:999px; padding:4px;
-  }
-  .stepper button{
-    width:27px; height:27px; border-radius:50%; border:none; cursor:pointer; flex:none;
-    background:var(--card); color:var(--text); font-size:15px; font-weight:800;
-    display:flex; align-items:center; justify-content:center; box-shadow:0 1px 0 var(--line);
-  }
-  .stepper button:hover{background:var(--fam-color, var(--sun)); color:var(--ink-on-accent);}
-  .stepper button:focus-visible{outline:2px solid var(--sea); outline-offset:2px;}
-  .stepper input{
-    width:100%; text-align:center; border:none; background:transparent; color:var(--text);
-    font-family:var(--font-mono); font-weight:700; font-size:14px;
-  }
-  .stepper input:focus-visible{outline:2px solid var(--sea); border-radius:4px;}
-
-  /* ---------- Ingredient stock panel ---------- */
-  .stock-search{padding:14px 18px 10px; border-bottom:1px solid var(--line);}
-  .stock-search input{
-    width:100%; padding:9px 12px; border-radius:999px; border:1px solid var(--line);
-    background:var(--bg); color:var(--text); font-family:var(--font-body); font-size:13.5px;
-  }
-  .stock-search input:focus-visible{outline:2px solid var(--sea); outline-offset:1px;}
-  .stock-chips{display:flex; flex-wrap:wrap; gap:7px; padding:0 18px 14px; border-bottom:1px solid var(--line);}
-  .cat-chip{
-    appearance:none; cursor:pointer; font-family:var(--font-body); font-weight:800; font-size:11.5px;
-    letter-spacing:.03em; padding:6px 11px 6px 9px; border-radius:8px 8px 8px 2px;
-    border:1.5px dashed var(--chip-color); background:transparent; color:var(--chip-color);
-    display:inline-flex; align-items:center; gap:5px;
-  }
-  .cat-chip[aria-pressed="true"]{background:var(--chip-color); color:var(--ink-on-accent); border-style:solid;}
-  .stock-scroll{max-height:560px; overflow-y:auto;}
-  .stock-cat-head{
-    position:sticky; top:0; z-index:1;
-    padding:8px 18px; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; font-weight:800;
-    color:var(--text-dim); background:var(--card-2); border-bottom:1px solid var(--line); border-top:1px solid var(--line);
-  }
-  .stock-row{display:flex; align-items:baseline; gap:8px; padding:8px 18px; font-size:13.5px;}
-  .stock-row .n{white-space:nowrap;}
-  .stock-row .dots{flex:1; border-bottom:2px dotted var(--line); transform:translateY(-4px); min-width:14px;}
-  .stock-row .p{font-family:var(--font-mono); font-weight:700; color:var(--sun-deep); white-space:nowrap;}
-  .stock-note{padding:12px 18px; font-size:12px; color:var(--text-dim); background:var(--card-2); border-top:1px solid var(--line);}
-
-  /* ---------- Money laundering calculator ---------- */
-  .launder-panel{margin-top:22px;}
-  .launder-body{display:grid; grid-template-columns:1fr 1fr; gap:26px; align-items:start;}
-  @media (max-width:760px){ .launder-body{grid-template-columns:1fr;} }
-  .launder-field{display:flex; flex-direction:column; gap:8px;}
-  .launder-field + .launder-field{margin-top:18px;}
-  .launder-field label{
-    font-size:11.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-dim); font-weight:800;
-    display:flex; justify-content:space-between; align-items:baseline; gap:8px;
-  }
-  .launder-input{
-    width:100%; font-family:var(--font-mono); font-size:17px; font-weight:700;
-    background:var(--card-2); border:1px solid var(--line); color:var(--text);
-    border-radius:10px; padding:10px 12px;
-  }
-  .launder-input:focus-visible{outline:2px solid var(--sea); outline-offset:1px;}
-  .launder-pct-row{display:flex; align-items:center; gap:12px;}
-  .launder-range{flex:1; accent-color:var(--sun-deep); cursor:pointer; height:22px;}
-  .launder-range:focus-visible{outline:2px solid var(--sea); outline-offset:2px;}
-  .launder-pct-input-wrap{
-    display:flex; align-items:center; gap:3px; flex:none;
-    background:var(--card-2); border:1px solid var(--line); border-radius:9px; padding:6px 10px;
-  }
-  .launder-pct-input-wrap:focus-within{outline:2px solid var(--sea); outline-offset:1px;}
-  .launder-pct-input{
-    width:44px; border:none; background:transparent; color:var(--sun-deep);
-    font-family:var(--font-mono); font-weight:800; font-size:15px; text-align:right; padding:0;
-  }
-  .launder-pct-input:focus-visible{outline:none;}
-  .launder-pct-input::-webkit-inner-spin-button, .launder-pct-input::-webkit-outer-spin-button{ -webkit-appearance:none; margin:0; }
-  .launder-pct-suffix{font-family:var(--font-mono); font-weight:700; color:var(--sun-deep); font-size:14px;}
-  .launder-hint{font-size:11.5px; color:var(--text-dim); line-height:1.5;}
-  .launder-results{display:flex; flex-direction:column; gap:10px;}
-  .launder-stat{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    padding:13px 15px; border-radius:var(--radius-md); border:1px solid var(--line); background:var(--card-2);
-  }
-  .launder-stat .k{font-size:12.5px; color:var(--text-dim); font-weight:700; letter-spacing:.02em;}
-  .launder-stat .v{font-family:var(--font-mono); font-weight:800; font-size:18px;}
-  .launder-stat.highlight{background:color-mix(in srgb, var(--good) 14%, var(--card)); border-color:color-mix(in srgb, var(--good) 45%, var(--line));}
-  .launder-stat.highlight .v{color:var(--good);}
-  .launder-stat.malas .v{color:var(--sun-deep);}
-
-  /* ---------- Footer bar ---------- */
-  .footer-bar{
-    position:fixed; left:0; right:0; bottom:0; z-index:20;
-    background:linear-gradient(90deg, var(--sea-deep), var(--sea));
-    border-top:3px solid var(--sun);
-    box-shadow:0 -14px 30px -18px rgba(0,0,0,.4);
-  }
-  .footer-inner{
-    max-width:1180px; margin:0 auto; padding:12px 20px;
-    display:flex; align-items:center; gap:18px; flex-wrap:wrap; justify-content:space-between;
-  }
-  .totals{display:flex; gap:18px; flex-wrap:wrap;}
-  .total-cell{font-size:12px; color:rgba(255,248,232,.75); display:flex; flex-direction:column; gap:2px;}
-  .total-cell b{font-family:var(--font-mono); font-size:15px; color:#FFF8E8; font-weight:700;}
-  .total-cell.good b{color:var(--sun);}
-
-  /* ---------- Modal ---------- */
-  .modal-veil{position:fixed; inset:0; background:rgba(5,15,17,.55); backdrop-filter:blur(2px); display:flex; align-items:flex-end; justify-content:center; z-index:40;}
-  .modal-veil[hidden]{display:none;}
-  .modal{width:100%; max-width:760px; max-height:min(82vh,720px); overflow-y:auto; background:var(--card); border:1px solid var(--line); border-radius:20px 20px 0 0; box-shadow:var(--shadow); padding:22px 22px 26px;}
-  @media (min-width:640px){ .modal-veil{align-items:center;} .modal{border-radius:var(--radius-lg); margin:20px;} }
-  .modal-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px;}
-  .modal-head h3{font-size:21px;}
-  table.list-table{width:100%; border-collapse:collapse; font-size:13.5px;}
-  table.list-table th{text-align:left; font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-dim); padding:6px 8px; border-bottom:1px solid var(--line);}
-  table.list-table td{padding:8px; border-bottom:1px solid var(--line); vertical-align:top;}
-  table.list-table td.num{font-family:var(--font-mono); text-align:right; white-space:nowrap;}
-  .table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius-md);}
-  .modal-section{margin-top:18px;}
-  .modal-section h4{font-family:var(--font-body); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-dim); margin:0 0 8px;}
-  .empty-note{padding:22px; text-align:center; color:var(--text-dim); font-size:14px;}
-  .entrega-toggle{
-    display:flex; align-items:center; gap:10px; cursor:pointer; font-weight:700; font-size:14px;
-    background:var(--card-2); border:1px solid var(--line); border-radius:var(--radius-md); padding:12px 14px;
-  }
-  .entrega-toggle input{width:17px; height:17px; accent-color:var(--sun-deep); cursor:pointer; flex:none;}
-  .entrega-toggle:focus-within{outline:2px solid var(--sea); outline-offset:2px;}
-  .entrega-note{font-weight:600; font-size:12px; color:var(--text-dim);}
-
-  .icon-btn{width:32px; height:32px; border-radius:50%; border:1px solid var(--line); background:var(--card-2); color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px;}
-  .icon-btn:hover{border-color:var(--sea);}
-  .icon-btn:focus-visible{outline:2px solid var(--sea); outline-offset:2px;}
-
-  ::-webkit-scrollbar{width:10px; height:10px;}
-  ::-webkit-scrollbar-thumb{background:var(--line); border-radius:99px;}
-
-  @media (prefers-reduced-motion: reduce){ .btn, .stepper button{transition:none;} }
+/* Pétalas */
+.petals{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.petal{position:absolute;top:-20px;width:10px;height:8px;background:var(--rose);border-radius:80% 0 80% 0;opacity:.45;animation:fall linear infinite}
+@keyframes fall{to{transform:translate(var(--dx),110vh) rotate(540deg)}}
+@media (prefers-reduced-motion:reduce){.petals{display:none}.chev{transition:none}}
 </style>
 </head>
 <body>
+
+
+<div class="petals" id="petals" aria-hidden="true"></div>
 <div class="wrap">
-  <header class="hero">
-    <svg class="hero-palms" viewBox="0 0 1180 220" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-      <g fill="#04222A" opacity="0.28">
-        <path d="M60 220 C55 150 40 120 0 100 C45 95 70 115 82 150 C88 118 78 90 45 60 C90 65 108 100 108 140 C118 105 112 70 90 35 C130 50 140 90 128 140 C150 115 155 85 140 45 C170 70 168 110 145 150 C160 210 150 220 150 220 Z"/>
-      </g>
-      <g fill="#04222A" opacity="0.22">
-        <path d="M1040 220 C1048 160 1070 130 1120 112 C1078 104 1048 122 1032 155 C1028 122 1042 92 1078 65 C1032 68 1010 104 1008 145 C996 110 1000 74 1024 40 C990 58 980 100 992 148 C972 118 968 90 982 55 C955 82 954 122 976 158 C965 210 972 220 972 220 Z"/>
-      </g>
-    </svg>
-    <svg class="hero-stamp" viewBox="0 0 200 200" aria-hidden="true">
-      <circle cx="100" cy="100" r="86" fill="none" stroke="#FFF3D2" stroke-width="2" stroke-dasharray="3 6" opacity="0.6"/>
-      <circle cx="100" cy="100" r="68" fill="#FFF3D2" opacity="0.1"/>
-      <path id="arcTop" d="M 26 108 A 74 74 0 0 1 174 108" fill="none"/>
-      <path id="arcBot" d="M 174 96 A 74 74 0 0 1 26 96" fill="none"/>
-      <text font-family="Bungee, sans-serif" font-size="13.5" fill="#FFF3D2" letter-spacing="2" opacity="0.85">
-        <textPath href="#arcTop" startOffset="50%" text-anchor="middle">ILHA · BAHAMAS</textPath>
-      </text>
-      <text font-family="Bungee, sans-serif" font-size="13.5" fill="#FFF3D2" letter-spacing="2" opacity="0.85">
-        <textPath href="#arcBot" startOffset="50%" text-anchor="middle">GTA V · PEAKY B</textPath>
-      </text>
-      <text x="100" y="112" text-anchor="middle" font-family="Bungee, sans-serif" font-size="24" fill="#FFF3D2" opacity="0.9">★</text>
-    </svg>
-    <span class="hero-eyebrow">Peaky B &middot; Beach Bar</span>
-    <h1 class="title">BAR <em>BAHAMAS</em></h1>
-    <p class="hero-sub">Lista de receitas do bar da ilha e stock de ingredientes. Seleciona as quantidades de cada cocktail para calcular custo, definir preço de venda e gerar a lista de preparação.</p>
+  <header>
+    <img class="banner" src="data:image/webp;base64,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" alt="Sakura" width="1568" height="549">
+    <p class="hero-sub">Receitas do restaurante e stock de ingredientes. Escolhe as quantidades de cada prato para ver o custo, o preço de venda com a tua margem e a lista de compras.</p>
     <div class="hero-stats" id="heroStats"></div>
-    <svg class="wave" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0 14 C 150 24 300 4 450 14 C 600 24 750 4 900 14 C 1000 20 1100 8 1200 14 L1200 24 L0 24 Z" fill="var(--bg)"></path>
-    </svg>
   </header>
 
   <main class="grid">
-    <section class="panel" aria-labelledby="receitasTitle">
+    <section class="panel" aria-labelledby="recTitle">
       <div class="panel-head">
-        <h2 id="receitasTitle">🍹 Receitas</h2>
-        <div class="panel-actions" style="display:flex; gap:8px; align-items:center;">
-          <span class="count" id="recCount"></span>
-          <button class="btn btn-ghost" id="btnLimpar" type="button">↺ Limpar</button>
+        <h2 id="recTitle">Receitas</h2>
+        <div class="head-actions">
+          <span class="margin-box">Margem de lucro <span id="marginShow"></span></span>
+          <button class="btn" id="btnLimpar" type="button">↺ Limpar</button>
         </div>
       </div>
       <div class="panel-body" id="recipeList"></div>
@@ -367,68 +187,34 @@
 
     <section class="panel" aria-labelledby="stockTitle">
       <div class="panel-head">
-        <h2 id="stockTitle">🌴 Stock de Ingredientes</h2>
+        <h2 id="stockTitle">Ingredientes</h2>
         <span class="count" id="stockCount"></span>
       </div>
-      <div class="stock-search">
-        <input type="search" id="stockSearch" placeholder="Procurar ingrediente…" aria-label="Procurar ingrediente">
-      </div>
+      <div class="stock-search"><input type="search" id="stockSearch" placeholder="Procurar ingrediente…" aria-label="Procurar ingrediente"></div>
       <div class="stock-chips" id="stockChips"></div>
       <div class="stock-scroll" id="stockScroll"></div>
-      <p class="stock-note">Grão de Café é fornecido pelo bar — sem preço de compra na lista, por isso não entra no custo.</p>
+      <p class="note">Preço de venda = custo × (1 + margem), arredondado ao euro para cima. Os ingredientes ainda sem preço aparecem com um campo para os preencheres aqui.</p>
     </section>
   </main>
-
-  <section class="panel launder-panel" aria-labelledby="launderTitle">
-    <div class="panel-head">
-      <h2 id="launderTitle">🧼 Lavagem de Dinheiro</h2>
-      <span class="count">margem 10% – 15%</span>
-    </div>
-    <div class="panel-body launder-body">
-      <div>
-        <div class="launder-field">
-          <label for="launderValor">Valor sujo a lavar (€)</label>
-          <input type="number" min="0" step="1000" inputmode="numeric" class="launder-input" id="launderValor" placeholder="Ex.: 1 500 000">
-        </div>
-        <div class="launder-field">
-          <label for="launderPct">Percentagem de lavagem</label>
-          <div class="launder-pct-row">
-            <input type="range" min="10" max="15" step="0.5" value="12.5" class="launder-range" id="launderPct" aria-label="Percentagem de lavagem (arrastar)">
-            <div class="launder-pct-input-wrap">
-              <input type="number" min="10" max="15" step="0.1" value="12.5" inputmode="decimal" class="launder-pct-input" id="launderPctInput" aria-label="Percentagem de lavagem (valor exato)">
-              <span class="launder-pct-suffix">%</span>
-            </div>
-          </div>
-          <span class="launder-hint">Mínimo 10% · Máximo 15% — arrasta o cursor ou escreve o valor exato.</span>
-        </div>
-      </div>
-      <div class="launder-results">
-        <div class="launder-stat"><span class="k">Comissão retida pelo bar</span><span class="v tabular" id="launderComissao">0,00 €</span></div>
-        <div class="launder-stat highlight"><span class="k">Valor a devolver ao cliente</span><span class="v tabular" id="launderDevolver">0,00 €</span></div>
-        <div class="launder-stat malas"><span class="k">Malas seguras necessárias</span><span class="v tabular" id="launderMalas">0</span></div>
-      </div>
-    </div>
-    <p class="stock-note">Cada 500.000 € lavados consomem 1 mala segura (arredondado para cima).</p>
-  </section>
 </div>
 
-<div class="footer-bar">
-  <div class="footer-inner">
+<div class="footer">
+  <div class="footer-in">
     <div class="totals">
-      <div class="total-cell">Receitas selecionadas<b class="tabular" id="totSel">0</b></div>
-      <div class="total-cell">Custo total<b class="tabular" id="totCusto">0,00 €</b></div>
-      <div class="total-cell">Venda total<b class="tabular" id="totVenda">0,00 €</b></div>
-      <div class="total-cell good">Lucro total<b class="tabular" id="totLucro">0,00 €</b></div>
+      <div class="tcell">Pratos selecionados<b class="tab" id="totSel">0</b></div>
+      <div class="tcell"><span id="totCustoLbl">Custo total</span><b class="tab" id="totCusto">0 €</b></div>
+      <div class="tcell">Venda total<b class="tab" id="totVenda">0 €</b></div>
+      <div class="tcell good">Lucro total<b class="tab" id="totLucro">0 €</b></div>
     </div>
-    <button class="btn btn-accent" id="btnLista" type="button">📋 Ver Lista</button>
+    <button class="btn btn-accent" id="btnLista" type="button">📋 Ver lista</button>
   </div>
 </div>
 
-<div class="modal-veil" id="modalVeil" hidden>
+<div class="veil" id="veil" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-head">
-      <h3 id="modalTitle">Lista de Preparação</h3>
-      <button class="icon-btn" id="btnCloseModal" aria-label="Fechar">✕</button>
+      <h3 id="modalTitle">Lista de compras</h3>
+      <button class="icon-btn" id="btnClose" type="button" aria-label="Fechar">✕</button>
     </div>
     <div id="modalBody"></div>
   </div>
@@ -436,498 +222,443 @@
 
 <script>
 (function(){
-  "use strict";
+"use strict";
 
-  /* ---------- Data ---------- */
-  var CATS = [
-    { key:'frutas', label:'Frutas', icon:'🍇', color:'var(--coral)', items:[
-      ['Uvas',145],['Pera da Horta',115],['Morangos',115],['Ananás',115],['Azeitonas',85],
-      ['Manga',100],['Banana',145],['Kiwi',135],['Limão',115],['Laranja',115],
-      ['Mirtilo',115],['Coco',95],['Tomate',95]
-    ]},
-    { key:'legumes', label:'Legumes', icon:'🌿', color:'var(--good)', items:[
-      ['Alface',65],['Baunilha',75],['Cogumelos',95],['Alho',95],['Coentros',80],
-      ['Batata',95],['Cebola',95],['Pimenta',85],['Arroz',50],['Folhas de Chá',80]
-    ]},
-    { key:'outros', label:'Outros', icon:'📦', color:'var(--sun-deep)', items:[
-      ['Frango',200],['Pão',210],['Queijo',60],['Ovos',200],['Fiambre',300],
-      ['Açúcar',200],['Farinha',200],['Massa Folhada',200],['Azeite',210],
-      ['Chouriço',300],['Carne',200],['Presunto',300],['Leitão',300],['Leite',75],
-      ['Grão de Café',150],['Chocolate',150],['Bola de Gelado',150],['Bolacha',135],
-      ['Gelatina',150],['Manteiga',150],['Óleo',225],['Tortilhas',150],['Maionese',165]
-    ]},
-    { key:'extras', label:'Extras', icon:'✨', color:'var(--violet)', items:[
-      ['Gelo',40],['Receita Secreta',20]
-    ]},
-    { key:'bebidas', label:'Bebidas & Base', icon:'🍾', color:'var(--sea)', items:[
-      ['Alchool',500],['Garrafão de Água',10],['Cerveja',80],['Água Tónica',30],
-      ['Ice Tea Limão',100],['Sumol de Laranja',90]
-    ]}
-  ];
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║  CONFIGURAÇÃO — edita só esta parte                              ║
+   ║                                                                  ║
+   ║  • Preços em euros, sem aspas:            "Atum":   100,         ║
+   ║  • Sem preço ainda? Escreve null:         "Cenoura": null,       ║
+   ║    (aparece um campo na página para o preencheres lá)            ║
+   ║  • Não apagues as vírgulas no fim das linhas.                    ║
+   ║  • O nome do ingrediente tem de ser igual nas receitas.          ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
 
-  var FAM_META = {
-    alcool:{ label:'Bebidas Com Álcool', icon:'🍸' },
-    semalcool:{ label:'Bebidas Sem Álcool', icon:'🥤' },
-    energetico:{ label:'Energéticos', icon:'⚡' },
-    comida:{ label:'Comida', icon:'🍲' }
-  };
-  var FAM_ORDER = ['alcool','semalcool','energetico','comida'];
+var MARGEM_PADRAO = 50;   // % de lucro aplicada a todos os pratos (só se muda aqui)
+var TAXA_ENTREGA  = 10;   // % que a loja cobra para entregar no restaurante
 
-  var RECIPES = [
-    { id:'vodka', n:'Vodka', icon:'🥃', fam:'alcool', ing:[['Alchool',1],['Batata',1],['Garrafão de Água',1]] },
-    { id:'whiskey', n:'Whiskey', icon:'🥃', fam:'alcool', ing:[['Alchool',1],['Farinha',1],['Garrafão de Água',1]] },
-    { id:'champagne', n:'Champagne', icon:'🥂', fam:'alcool', ing:[['Garrafão de Água',1],['Uvas',1],['Alchool',1],['Gelo',1],['Açúcar',1]] },
-    { id:'caipirinha', n:'Caipirinha', icon:'🍹', fam:'alcool', ing:[['Garrafão de Água',1],['Gelo',1],['Alchool',1],['Açúcar',1],['Morango',1]] },
-    { id:'uto-cola', n:'Uto-Cola', icon:'🥤', fam:'semalcool', ing:[['Uvas',1],['Açúcar',1],['Receita Secreta',1],['Garrafão de Água',1]] },
-    { id:'sumol', n:'Garrafa de Sumol', icon:'🧃', fam:'semalcool', ing:[['Garrafão de Água',1],['Açúcar',1],['Receita Secreta',1],['Grão de Café',1]] },
-    { id:'junk-blue', n:'Junk Blue', icon:'⚡', fam:'energetico', ing:[['Açúcar',1],['Garrafão de Água',1],['Mirtilo',2],['Grão de Café',2]] },
-    { id:'junk-green', n:'Junk Green', icon:'⚡', fam:'energetico', ing:[['Açúcar',1],['Garrafão de Água',1],['Pera da Horta',2],['Grão de Café',2]] },
-    { id:'junk-orange', n:'Junk Orange', icon:'⚡', fam:'energetico', ing:[['Açúcar',1],['Garrafão de Água',1],['Laranja',3],['Grão de Café',3]] },
-    { id:'junk-purple', n:'Junk Purple', icon:'⚡', fam:'energetico', ing:[['Banana',3],['Garrafão de Água',3],['Açúcar',3],['Manga',5],['Grão de Café',8]] },
-    { id:'junk-red', n:'Junk Red', icon:'⚡', fam:'energetico', ing:[['Açúcar',2],['Garrafão de Água',2],['Morango',6],['Grão de Café',6]] },
-    { id:'absinto', n:'Absinto', icon:'🍸', fam:'alcool', ing:[['Folhas de Chá',1],['Alchool',1],['Açúcar',1],['Garrafão de Água',1]] },
-    { id:'tequilla', n:'Tequilla', icon:'🥃', fam:'alcool', ing:[['Alchool',1],['Pera da Horta',1],['Garrafão de Água',1]] },
-    { id:'utopal', n:'Utopal de Frutos Vermelhos', icon:'🍷', fam:'semalcool', ing:[['Ananas',1],['Açúcar',1],['Receita Secreta',1],['Garrafão de Água',1]] },
-    { id:'gin', n:'Gin', icon:'🍸', fam:'alcool', ing:[['Gelo',1],['Alchool',1],['Coentros',1],['Garrafão de Água',1]] },
-    { id:'pina-colada', n:'Pina Colada', icon:'🍍', fam:'alcool', ing:[['Garrafão de Água',1],['Ananas',1],['Alchool',1],['Coco',1],['Gelo',1]] },
-    { id:'margarita', n:'Margarita', icon:'🍸', fam:'alcool', ing:[['Garrafão de Água',1],['Ananas',1],['Alchool',1],['Gelo',1],['Açúcar',1]] },
-    { id:'santali-pera', n:'Santali de Pera', icon:'🍐', fam:'semalcool', ing:[['Manga',2],['Laranja',2],['Gelo',3],['Limão',3],['Açúcar',3],['Garrafão de Água',4],['Pera da Horta',6]] },
-    { id:'sopa-cenoura', n:'Sopa de Cenoura', icon:'🥕', fam:'comida', ing:[['Pimenta',2],['Pão',2],['Garrafão de Água',2],['Azeite',2],['Batata',3],['Alho',3],['Cebola',4],['Cenoura',6]] }
-  ];
 
-  var UNPRICED = {};
+/* ---------- INGREDIENTES (preço de compra por unidade) ---------- */
+var INGREDIENTES = {
 
-  function norm(s){
-    return s.toLowerCase()
-      .normalize('NFD').replace(/[̀-ͯ]/g,'')
-      .replace(/\s+/g,' ').trim()
-      .replace(/s$/,'');
-  }
+  "🐟 Peixe · Parceria": {
+    "Salmão":            0,
+    "Atum":              100,
+    "Lula":              100,
+    "Dourada":           100,
+    "Espadarte":         150,
+    "Garoupa":           250,
+    "Camarão":           400,
+  },
 
-  var PRICE_MAP = {};
-  CATS.forEach(function(cat){ cat.items.forEach(function(it){ PRICE_MAP[norm(it[0])] = it[1]; }); });
+  "🍑 Frutas": {
+    "Pera da Horta":     115,
+    "Morango":           115,
+    "Manga":             100,
+    "Limão":             115,
+    "Laranja":           115,
+  },
 
-  function priceOf(name){
-    var key = norm(name);
-    if (UNPRICED[key]) return null;
-    return (key in PRICE_MAP) ? PRICE_MAP[key] : null;
-  }
+  "🌿 Legumes": {
+    "Alface":            65,
+    "Baunilha":          75,
+    "Alho":              95,
+    "Coentros":          80,
+    "Batata":            95,
+    "Cebola":            95,
+    "Pimenta":           85,
+    "Arroz":             50,
+    "Folhas de Chá":     80,
+    "Cenoura":           null,
+  },
 
-  function euro(v){
-    return v.toLocaleString('pt-PT', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
-  }
+  "🧺 Outros": {
+    "Pão":               210,
+    "Ovos":              200,
+    "Açúcar":            200,
+    "Farinha":           200,
+    "Azeite":            210,
+    "Carne":             200,
+  },
 
-  RECIPES.forEach(function(r){
-    var cost = 0, missing = [];
-    r.ing.forEach(function(pair){
-      var p = priceOf(pair[0]);
-      if (p === null) { if (missing.indexOf(pair[0]) === -1) missing.push(pair[0]); }
-      else cost += p * pair[1];
-    });
-    r.custoUnit = cost;
-    r.missing = missing;
+  "🏪 Loja": {
+    "Alga nori":         5,
+    "Filé de tubarão":   5,
+    "Garrafão de água":  10,
+    "Gelo":              40,
+    "Ice Tea Limão":     100,
+    "Sumol de Laranja":  90,
+  },
+
+  "📦 Caixas": {
+    "Papelão":           null,
+  },
+
+};
+
+
+/* ---------- FAMÍLIAS (secções da página, pela ordem em que aparecem) ---------- */
+var FAMILIAS = [
+  "🍣 Sushi",
+  "🍤 Pratos quentes",
+  "🍵 Bebidas",
+  "🍡 Sobremesas",
+  "⏱ Consumo automático",
+  "📦 Caixas",
+];
+
+
+/* ---------- RECEITAS ----------
+   familia:      tem de ser igual a uma das FAMÍLIAS acima (sem o emoji)
+   ingredientes: "Nome do ingrediente": quantidade
+   precoVenda:   opcional. Se não puseres, o preço de venda usa a margem.
+                 Um número fixa o preço. null mostra um campo na página.     */
+var RECEITAS = [
+
+  // 🍣 Sushi
+  { nome: "Nigiri",    familia: "Sushi", icone: "🍣", descricao: "Nigiri de salmão",
+    ingredientes: { "Salmão": 1, "Arroz": 1 } },
+
+  { nome: "Sashimi",   familia: "Sushi", icone: "🐟", descricao: "Sashimi de salmão",
+    ingredientes: { "Salmão": 1 } },
+
+  { nome: "Maki",      familia: "Sushi", icone: "🍙", descricao: "Rolo maki de atum",
+    ingredientes: { "Atum": 1, "Alface": 1, "Arroz": 1, "Alga nori": 1 } },
+
+  { nome: "Uramaki",   familia: "Sushi", icone: "🍥", descricao: "Uramaki de dourada e manga",
+    ingredientes: { "Dourada": 1, "Alga nori": 1, "Manga": 1, "Arroz": 1 } },
+
+  { nome: "Temaki",    familia: "Sushi", icone: "🌯", descricao: "Cone temaki",
+    ingredientes: { "Filé de tubarão": 1, "Espadarte": 1, "Arroz": 1, "Alga nori": 1 } },
+
+  { nome: "Futomaki",  familia: "Sushi", icone: "🍱", descricao: "Futomaki especial",
+    ingredientes: { "Lula": 1, "Manga": 1, "Arroz": 1, "Garoupa": 1, "Pera da Horta": 1 } },
+
+  { nome: "Gunkan",    familia: "Sushi", icone: "🍘", descricao: "Gunkan de salmão e coentros",
+    ingredientes: { "Salmão": 1, "Coentros": 1, "Arroz": 1 } },
+
+  // 🍤 Pratos quentes
+  { nome: "Tempura de camarão", familia: "Pratos quentes", icone: "🍤", descricao: "Tempura de camarão crocante",
+    ingredientes: { "Farinha": 1, "Camarão": 1, "Ovos": 1 } },
+
+  { nome: "Arroz chau-chau",    familia: "Pratos quentes", icone: "🍚", descricao: "Arroz frito chau-chau",
+    ingredientes: { "Alho": 1, "Carne": 1, "Ovos": 1, "Arroz": 1 } },
+
+  // 🍵 Bebidas
+  { nome: "Chá chinês",       familia: "Bebidas", icone: "🍵", descricao: "Chá chinês aromático",
+    ingredientes: { "Folhas de Chá": 1, "Garrafão de água": 1, "Açúcar": 1 } },
+
+  { nome: "Limonada Caseira", familia: "Bebidas", icone: "🍋", descricao: "Limonada caseira",
+    ingredientes: { "Limão": 1, "Açúcar": 1, "Garrafão de água": 1 } },
+
+  { nome: "Ice Tea Limão",    familia: "Bebidas", icone: "🧋", descricao: "Comprado pronto",
+    ingredientes: { "Ice Tea Limão": 1 } },
+
+  { nome: "Sumol de Laranja", familia: "Bebidas", icone: "🥫", descricao: "Comprado pronto",
+    ingredientes: { "Sumol de Laranja": 1 } },
+
+  // 🍡 Sobremesas
+  { nome: "Mochi de baunilha", familia: "Sobremesas", icone: "🍡", descricao: "Doce mochi de baunilha",
+    ingredientes: { "Baunilha": 1, "Arroz": 1 } },
+
+  { nome: "Mochi de morango",  familia: "Sobremesas", icone: "🍓", descricao: "Doce mochi de morango",
+    ingredientes: { "Morango": 1, "Arroz": 1 } },
+
+  { nome: "Mochi de manga",    familia: "Sobremesas", icone: "🥭", descricao: "Doce mochi de manga",
+    ingredientes: { "Manga": 1, "Arroz": 1 } },
+
+  // ⏱ Consumo automático
+  { nome: "Sopa de Cenoura", familia: "Consumo automático", icone: "🥕",
+    descricao: "Comida automática quando a fome chega aos 10% (recupera 10%)",
+    ingredientes: { "Pimenta": 2, "Garrafão de água": 2, "Pão": 2, "Azeite": 2,
+                    "Alho": 3, "Batata": 3, "Cebola": 4, "Cenoura": 6 } },
+
+  { nome: "Santali de Pera", familia: "Consumo automático", icone: "🍐",
+    descricao: "Bebida automática quando a sede chega aos 10% (recupera 10%)",
+    ingredientes: { "Manga": 2, "Laranja": 2, "Limão": 3, "Gelo": 3,
+                    "Açúcar": 3, "Garrafão de água": 4, "Pera da Horta": 6 } },
+
+  // 📦 Caixas
+  { nome: "Caixa", familia: "Caixas", icone: "📦",
+    descricao: "Caixa de cartão. Cada uma permite vender 100 nas zonas de dominação",
+    ingredientes: { "Papelão": 20 },
+    precoVenda: null },
+
+];
+
+/* ═══════════════ FIM DA CONFIGURAÇÃO — não precisas de mexer daqui para baixo ═══════════════ */
+
+
+/* ---------- Conversão da configuração ---------- */
+var ENTREGA_PCT = TAXA_ENTREGA;
+var PALETTE = ["var(--sea)","var(--rose-deep)","var(--matcha)","var(--gold)","var(--plum)","var(--peach)"];
+function slugify(s){return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}
+function splitIcon(label){var m=label.match(/^(\S+)\s+(.+)$/);return (m&&!/[A-Za-zÀ-ÿ0-9]/.test(m[1]))?{icon:m[1],label:m[2]}:{icon:"•",label:label}}
+var CATS = Object.keys(INGREDIENTES).map(function(cat,i){
+  var h=splitIcon(cat),it=INGREDIENTES[cat];
+  return {key:slugify(h.label),label:h.label,icon:h.icon,color:PALETTE[i%PALETTE.length],
+    items:Object.keys(it).map(function(n){return it[n]===null?[n,null,"edit"]:[n,+it[n]]})};
+});
+var FAMS = FAMILIAS.map(function(f,i){var h=splitIcon(f);return {key:slugify(h.label),label:h.label,icon:h.icon,color:PALETTE[(i+1)%PALETTE.length]}});
+var RECIPES = RECEITAS.map(function(r){
+  var o={id:slugify(r.nome),n:r.nome,d:r.descricao||"",icon:r.icone||"🍽",fam:slugify(r.familia),
+    ing:Object.keys(r.ingredientes).map(function(k){return [k,+r.ingredientes[k]]})};
+  if("precoVenda" in r){o.fixedSale=true;o.saleDefault=r.precoVenda;o.saleEditable=r.precoVenda===null}
+  return o;
+});
+/* Ingredientes usados nas receitas mas que não estão na lista: aparecem com campo para preencher */
+(function(){
+  var known={};CATS.forEach(function(c){c.items.forEach(function(it){known[norm(it[0])]=true})});
+  var extra=[];RECIPES.forEach(function(r){r.ing.forEach(function(p){var k=norm(p[0]);if(!known[k]){known[k]=true;extra.push([p[0],null,"edit"])}})});
+  if(extra.length)CATS.push({key:"sem-categoria",label:"Sem categoria",icon:"❔",color:"var(--text-dim)",items:extra});
+})();
+
+/* ---------- Preços ---------- */
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\s+/g," ").trim().replace(/s$/,"")}
+
+/* Só mostrar no stock os ingredientes que as receitas usam */
+var USED={};RECIPES.forEach(function(r){r.ing.forEach(function(p){USED[norm(p[0])]=true})});
+CATS=CATS.map(function(c){return {key:c.key,label:c.label,icon:c.icon,color:c.color,items:c.items.filter(function(it){return USED[norm(it[0])]})}})
+  .filter(function(c){return c.items.length});
+var PRICE = {};
+CATS.forEach(function(c){c.items.forEach(function(it){PRICE[norm(it[0])]=it[1]})});
+var EDITABLE={};CATS.forEach(function(c){c.items.forEach(function(it){if(it[2]==="edit")EDITABLE[norm(it[0])]=true})});
+var custom={prices:{},sale:{}};
+function priceOf(name){var k=norm(name);if(EDITABLE[k]){var v=custom.prices[k];return (v===undefined||v===null||v==="")?null:+v}return (k in PRICE)?PRICE[k]:null}
+function euro(v){return Math.round(v).toLocaleString("pt-PT")+" €"}
+function signed(v){return (v>=0?"+":"")+euro(v)}
+
+function recalc(){RECIPES.forEach(function(r){
+  var c=0,miss=[];
+  r.ing.forEach(function(p){var pr=priceOf(p[0]);if(pr===null){if(miss.indexOf(p[0])<0)miss.push(p[0])}else c+=pr*p[1]});
+  r.custo=c;r.missing=miss;
+})}
+recalc();
+var BY_ID={};RECIPES.forEach(function(r){BY_ID[r.id]=r});
+var FAM_BY={};FAMS.forEach(function(f){FAM_BY[f.key]=f});
+
+/* ---------- Estado ---------- */
+var state={qty:{},margin:MARGEM_PADRAO,entrega:false};
+RECIPES.forEach(function(r){state.qty[r.id]=0});
+var hiddenCats={};
+var KEY="sakura-v3";
+function snapshot(){return {qty:state.qty,margin:state.margin,entrega:state.entrega,hiddenCats:hiddenCats,custom:custom}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(snapshot()))}catch(e){}}
+function restore(d){
+  if(!d)return;
+  if(d.qty)Object.keys(d.qty).forEach(function(k){if(k in state.qty)state.qty[k]=+d.qty[k]||0});
+  if(typeof d.entrega==="boolean")state.entrega=d.entrega;
+  if(d.hiddenCats)hiddenCats=d.hiddenCats;
+  if(d.custom){custom.prices=d.custom.prices||{};custom.sale=d.custom.sale||{}}
+  recalc();
+}
+function venda(r){if(r.fixedSale){var v=r.saleEditable?custom.sale[r.id]:r.saleDefault;return (v===undefined||v===null||v==="")?null:+v}return Math.ceil(r.custo*(1+(state.margin||0)/100))}
+function vend0(r){return venda(r)||0}
+
+/* ---------- Render ---------- */
+function renderHero(){
+  var n=0;CATS.forEach(function(c){n+=c.items.length});
+  document.getElementById("heroStats").innerHTML=
+    '<span class="pill"><b>'+RECIPES.length+'</b> receitas</span>'+
+    '<span class="pill"><b>'+n+'</b> ingredientes usados</span>'+
+    '<span class="pill">Margem <b id="heroMargin">'+state.margin+'%</b></span>';
+}
+
+function cardHtml(r){
+  var f=FAM_BY[r.fam],q=state.qty[r.id];
+  var chips=r.ing.map(function(p){return '<span class="chip'+(priceOf(p[0])===null?' unpriced':'')+'">'+p[1]+'x '+p[0]+'</span>'}).join("");
+  return '<article class="card'+(q>0?' on':'')+'" data-id="'+r.id+'" style="--fc:'+f.color+'">'+
+    '<div class="top"><span class="ico" aria-hidden="true">'+r.icon+'</span><div><div class="name">'+r.n+'</div><div class="desc">'+r.d+'</div></div></div>'+
+    '<div class="chips">'+chips+'</div>'+
+    '<div class="stats">'+
+      '<div class="stat"><span class="k">Custo un.</span><span class="v tab c-custo"></span></div>'+
+      '<div class="stat"><span class="k">Venda un.</span>'+(r.saleEditable?'<span class="eur"><input type="number" min="0" inputmode="decimal" class="sale-in tab" id="sale-'+r.id+'" placeholder="?" value="'+(venda(r)===null?'':venda(r))+'" aria-label="Preço de venda de '+r.n+'"><span>€</span></span>':'<span class="v venda tab c-venda"></span>')+'</div>'+
+      '<div class="stat"><span class="k">Lucro un.</span><span class="v tab c-lucro"></span></div>'+
+    '</div>'+
+    '<div class="stepper">'+
+      '<button type="button" class="dec" aria-label="Diminuir '+r.n+'">−</button>'+
+      '<input type="number" min="0" inputmode="numeric" class="tab" id="qty-'+r.id+'" value="'+q+'" aria-label="Quantidade de '+r.n+'">'+
+      '<button type="button" class="inc" aria-label="Aumentar '+r.n+'">+</button>'+
+    '</div></article>';
+}
+
+function selCount(fk){var n=0;RECIPES.forEach(function(r){if(r.fam===fk&&state.qty[r.id]>0)n++});return n}
+
+function renderRecipes(){
+  var wrap=document.getElementById("recipeList");
+  wrap.innerHTML=FAMS.map(function(f,i){
+    var items=RECIPES.filter(function(r){return r.fam===f.key}),s=selCount(f.key);
+    return '<details class="fam"'+(i===0?' open':'')+' style="--fc:'+f.color+'">'+
+      '<summary><span class="dot"></span>'+f.icon+' '+f.label+' <span class="fam-count">'+items.length+'</span>'+
+      ' <span class="fam-sel" data-fam="'+f.key+'"'+(s?'':' hidden')+'>'+s+' selecionado'+(s===1?'':'s')+'</span><span class="chev">⌄</span></summary>'+
+      '<div class="fam-body"><div class="cards">'+items.map(cardHtml).join("")+'</div></div></details>';
+  }).join("");
+  wrap.querySelectorAll(".card").forEach(function(el){
+    var id=el.getAttribute("data-id");
+    el.querySelector(".dec").addEventListener("click",function(){setQty(id,state.qty[id]-1)});
+    el.querySelector(".inc").addEventListener("click",function(){setQty(id,state.qty[id]+1)});
+    el.querySelector(".stepper input").addEventListener("input",function(e){setQty(id,parseInt(e.target.value,10)||0,true)});
+    var si=el.querySelector(".sale-in");if(si)si.addEventListener("input",function(){custom.sale[id]=si.value===""?null:+si.value;renderMoney(id);renderFooter();save()});
   });
+  RECIPES.forEach(function(r){renderMoney(r.id)});
+}
 
-  /* Preços de venda ao público (menu oficial do bar) */
-  var DEFAULT_VENDA = {
-    vodka:1500, whiskey:1500, caipirinha:1500, absinto:1500, gin:1500,
-    'uto-cola':1200, sumol:1200, utopal:1200,
-    'junk-green':2000, 'junk-blue':2500, 'junk-orange':3000, 'junk-red':4000, 'junk-purple':5000
-  };
+function renderMoney(id){
+  var r=BY_ID[id],el=document.querySelector('.card[data-id="'+id+'"]');if(!el)return;
+  var v=venda(r),miss=r.missing.length;
+  el.querySelector(".c-custo").textContent=miss?"a definir":euro(r.custo);
+  var ve=el.querySelector(".c-venda");if(ve)ve.textContent=v===null?"a definir":euro(v);
+  var le=el.querySelector(".c-lucro");
+  if(v===null||miss){le.textContent="a definir";le.className="v tab c-lucro pend"}
+  else{var l=v-r.custo;le.textContent=signed(l);le.className="v tab c-lucro "+(l>=0?"pos":"neg")}
+  el.querySelectorAll(".chip").forEach(function(ch,i){ch.classList.toggle("unpriced",priceOf(r.ing[i][0])===null)});
+  el.classList.toggle("on",state.qty[id]>0);
+}
 
-  var MALA_SEGURA_VALOR = 500000;
+function updateFam(fk){
+  var el=document.querySelector('.fam-sel[data-fam="'+fk+'"]');if(!el)return;
+  var n=selCount(fk);el.textContent=n+" selecionado"+(n===1?"":"s");el.hidden=n===0;
+}
 
-  /* ---------- State ---------- */
-  var ENTREGA_PCT = 10;
-  var state = { qty:{}, venda:{}, launder:{ valor:0, pct:12.5 }, entrega:false };
-  RECIPES.forEach(function(r){ state.qty[r.id] = 0; state.venda[r.id] = (r.id in DEFAULT_VENDA) ? DEFAULT_VENDA[r.id] : null; });
-  var hiddenCats = {};
+function setQty(id,val,fromInput){
+  if(val<0||isNaN(val))val=0;
+  state.qty[id]=val;
+  var inp=document.getElementById("qty-"+id);if(inp&&!fromInput)inp.value=val;
+  renderMoney(id);renderFooter();updateFam(BY_ID[id].fam);save();
+}
 
-  function snapshot(){ return { qty: state.qty, venda: state.venda, hiddenCats: hiddenCats, launder: state.launder, entrega: state.entrega }; }
-  function restore(data){
-    if (data && data.qty) { Object.keys(data.qty).forEach(function(k){ if (k in state.qty) state.qty[k] = data.qty[k]; }); }
-    if (data && data.venda) { Object.keys(data.venda).forEach(function(k){ if (k in state.venda) state.venda[k] = data.venda[k]; }); }
-    if (data && data.hiddenCats) { hiddenCats = data.hiddenCats; }
-    if (data && data.launder) { state.launder = data.launder; }
-    if (data && typeof data.entrega === 'boolean') { state.entrega = data.entrega; }
-  }
+function renderStock(filter){
+  filter=(filter||"").trim().toLowerCase();
+  var chips=document.getElementById("stockChips");
+  chips.innerHTML=CATS.map(function(c){return '<button type="button" class="cat-chip" data-cat="'+c.key+'" style="--cc:'+c.color+'" aria-pressed="'+(!hiddenCats[c.key])+'">'+c.icon+' '+c.label+'</button>'}).join("");
+  chips.querySelectorAll(".cat-chip").forEach(function(b){b.addEventListener("click",function(){var k=b.getAttribute("data-cat");hiddenCats[k]=!hiddenCats[k];save();renderStock(document.getElementById("stockSearch").value)})});
+  var html="",shown=0,all=0;
+  CATS.forEach(function(c){
+    all+=c.items.length;if(hiddenCats[c.key])return;
+    var rows=c.items.filter(function(it){return !filter||it[0].toLowerCase().indexOf(filter)!==-1});
+    if(!rows.length)return;shown+=rows.length;
+    html+='<div class="stock-head">'+c.icon+' '+c.label+'</div>';
+    rows.forEach(function(it){
+      if(it[2]==="edit"){var k=norm(it[0]),cv=custom.prices[k];
+        html+='<div class="row"><span class="n">'+it[0]+'</span><span class="dots"></span><span class="eur"><input type="number" min="0" inputmode="decimal" class="price-in tab" data-k="'+k+'" id="price-'+k.replace(/[^a-z0-9]/g,"-")+'" placeholder="?" value="'+(cv==null?'':cv)+'" aria-label="Preço de '+it[0]+'"><span>€</span></span></div>';return}
+      html+='<div class="row"><span class="n">'+it[0]+'</span><span class="dots"></span><span class="p tab'+(it[1]===null?' none':'')+'">'+(it[1]===null?'sem preço':euro(it[1]))+'</span></div>'});
+  });
+  document.getElementById("stockScroll").innerHTML=html||'<p class="empty">Nenhum ingrediente encontrado.</p>';
+  document.querySelectorAll("#stockScroll .price-in").forEach(function(inp){inp.addEventListener("input",function(){
+    custom.prices[inp.getAttribute("data-k")]=inp.value===""?null:+inp.value;recalc();RECIPES.forEach(function(r){renderMoney(r.id)});renderFooter();save()})});
+  document.getElementById("stockCount").textContent=shown+" / "+all+" itens";
+}
 
-  function renderHeroStats(){
-    var ingredientCount = 0;
-    CATS.forEach(function(c){ ingredientCount += c.items.length; });
-    document.getElementById('heroStats').innerHTML =
-      '<span class="hero-stat"><b>' + RECIPES.length + '</b> receitas</span>' +
-      '<span class="hero-stat"><b>' + ingredientCount + '</b> ingredientes em stock</span>' +
-      '<span class="hero-stat"><b>' + CATS.length + '</b> categorias</span>';
-  }
+function totals(){
+  var sel=0,c=0,v=0;
+  RECIPES.forEach(function(r){var q=state.qty[r.id];if(q>0)sel++;c+=r.custo*q;v+=vend0(r)*q});
+  return {sel:sel,custo:c,venda:v,lucro:v-c};
+}
+function renderFooter(){
+  var t=totals();
+  document.getElementById("totSel").textContent=t.sel;
+  var e=state.entrega?t.custo*ENTREGA_PCT/100:0;
+  document.getElementById("totCustoLbl").textContent=state.entrega?"Custo total (c/ entrega)":"Custo total";
+  document.getElementById("totCusto").textContent=euro(t.custo+e);
+  document.getElementById("totVenda").textContent=euro(t.venda);
+  document.getElementById("totLucro").textContent=signed(t.venda-t.custo-e);
+}
 
-  function ingLabel(name, n){
-    var p = priceOf(name);
-    return { text:n + 'x ' + name, unpriced:p === null };
-  }
+/* ---------- Lista de preparação ---------- */
+function needList(sel){
+  var need={};
+  sel.forEach(function(r){var q=state.qty[r.id];r.ing.forEach(function(p){var k=norm(p[0]);if(!need[k])need[k]={label:p[0],qty:0,price:priceOf(p[0])};need[k].qty+=p[1]*q})});
+  return Object.keys(need).map(function(k){return need[k]}).sort(function(a,b){return a.label.localeCompare(b.label,"pt")});
+}
 
-  function drinkCardHtml(r){
-    var qty = state.qty[r.id];
-    var venda = state.venda[r.id];
-    var chips = r.ing.map(function(pair){
-      var lab = ingLabel(pair[0], pair[1]);
-      return '<span class="chip' + (lab.unpriced ? ' unpriced' : '') + '">' + lab.text + '</span>';
-    }).join('');
-    var lucroHtml;
-    if (venda !== null){
-      var lucroUnit = venda - r.custoUnit;
-      lucroHtml = '<span class="v lucro ' + (lucroUnit >= 0 ? 'pos' : 'neg') + ' tabular">' + (lucroUnit >= 0 ? '+' : '') + euro(lucroUnit) + '</span>';
-    } else {
-      lucroHtml = '<span class="v lucro pending">definir →</span>';
-    }
-    return (
-      '<article class="drink-card fam-' + r.fam + '" data-id="' + r.id + '">' +
-        '<div class="drink-top">' +
-          '<span class="drink-icon" aria-hidden="true">' + r.icon + '</span>' +
-          '<span class="drink-name">' + r.n + '</span>' +
-        '</div>' +
-        '<div class="chips">' + chips + '</div>' +
-        '<div class="drink-stats">' +
-          '<div class="stat"><span class="k">Custo un.</span><span class="v custo tabular">' + euro(r.custoUnit) + '</span></div>' +
-          '<div class="stat"><span class="k">Venda un.</span>' +
-            '<span class="v venda-value tabular' + (venda === null ? ' empty' : '') + '" id="venda-' + r.id + '">' + (venda !== null ? euro(venda) : '—') + '</span></div>' +
-          '<div class="stat"><span class="k">Lucro un.</span>' + lucroHtml + '</div>' +
-        '</div>' +
-        '<div class="stepper">' +
-          '<button type="button" class="qty-dec" aria-label="Diminuir quantidade de ' + r.n + '">−</button>' +
-          '<input type="number" min="0" class="qty-input tabular" id="qty-' + r.id + '" value="' + qty + '" aria-label="Quantidade de ' + r.n + '">' +
-          '<button type="button" class="qty-inc" aria-label="Aumentar quantidade de ' + r.n + '">+</button>' +
-        '</div>' +
-      '</article>'
-    );
-  }
+function buildList(){
+  var sel=RECIPES.filter(function(r){return state.qty[r.id]>0});
+  if(!sel.length)return '<p class="empty">Ainda não escolheste nenhuma quantidade. Usa os botões + nas receitas para começar a lista.</p>';
+  var t=totals(),ings=needList(sel);
+  var entregaV=state.entrega?t.custo*ENTREGA_PCT/100:0,pagar=t.custo+entregaV,lucroF=t.venda-pagar;
+  var rr=sel.map(function(r){var q=state.qty[r.id],c=r.custo*q,vu=venda(r),miss=r.missing.length;
+    var vt=vu===null?'—':euro(vu*q),lt=(vu===null||miss)?'—':signed(vu*q-c);
+    return '<tr><td>'+r.icon+' '+r.n+'</td><td class="num">'+q+'</td><td class="num">'+(miss?'a definir':euro(c))+'</td><td class="num">'+vt+'</td><td class="num">'+lt+'</td></tr>'}).join("");
+  var ir=ings.map(function(it){var ok=it.price!==null;
+    return '<tr><td'+(ok?'':' class="miss"')+'>'+it.label+'</td><td class="num">'+it.qty+'</td><td class="num">'+(ok?euro(it.price):'—')+'</td><td class="num">'+(ok?euro(it.price*it.qty):'sem preço')+'</td></tr>'}).join("");
+  return '<div class="msec"><h4>Pratos a preparar</h4><div class="table-wrap"><table>'+
+      '<thead><tr><th>Prato</th><th class="num">Qtd</th><th class="num">Custo</th><th class="num">Venda</th><th class="num">Lucro</th></tr></thead><tbody>'+rr+'</tbody></table></div></div>'+
+    '<div class="msec"><h4>Ingredientes necessários</h4><div class="table-wrap"><table>'+
+      '<thead><tr><th>Ingrediente</th><th class="num">Qtd</th><th class="num">Preço un.</th><th class="num">Subtotal</th></tr></thead><tbody>'+ir+'</tbody></table></div></div>'+
+    '<div class="msec"><h4>Entrega</h4><label class="toggle"><input type="checkbox" id="mEntrega"'+(state.entrega?' checked':'')+'> Entrega da loja no restaurante <small>(+'+ENTREGA_PCT+'% sobre o valor das compras)</small></label></div>'+
+    '<div class="msec"><h4>A pagar à loja</h4><div class="table-wrap"><table><tbody>'+
+      '<tr><td>Ingredientes</td><td class="num">'+euro(t.custo)+'</td></tr>'+
+      (state.entrega?'<tr><td>Taxa de entrega ('+ENTREGA_PCT+'%)</td><td class="num">+ '+euro(entregaV)+'</td></tr>':'')+
+      '<tr class="grand"><td>Total a pagar</td><td class="num">'+euro(pagar)+'</td></tr>'+
+    '</tbody></table></div></div>'+
+    '<div class="msec"><h4>Lucro</h4><div class="table-wrap"><table><tbody>'+
+      '<tr><td>Venda dos pratos</td><td class="num">'+euro(t.venda)+'</td></tr>'+
+      '<tr><td>Custo dos ingredientes</td><td class="num">− '+euro(t.custo)+'</td></tr>'+
+      (state.entrega?'<tr><td>Taxa de entrega da loja</td><td class="num">− '+euro(entregaV)+'</td></tr>':'')+
+      '<tr class="grand"><td>Lucro</td><td class="num">'+signed(lucroF)+'</td></tr>'+
+    '</tbody></table></div></div>'+
+    '<div class="mactions"><button class="btn btn-accent" type="button" id="mCopy">Copiar lista de compras</button>'+
+      '<button class="btn" type="button" id="mCopyMenu">Copiar menu com preços</button></div><div class="toast" id="toast"></div>';
+}
 
-  var FAM_COLOR = { alcool:'var(--coral)', semalcool:'var(--sea)', energetico:'var(--sun-deep)', comida:'var(--good)' };
-  var RECIPE_BY_ID = {};
-  RECIPES.forEach(function(r){ RECIPE_BY_ID[r.id] = r; });
+/* ---------- Discord ---------- */
+function B(s){return Array.from(s.normalize("NFD")).map(function(c){
+  if(c>="A"&&c<="Z")return String.fromCodePoint(0x1D400+c.charCodeAt(0)-65);
+  if(c>="a"&&c<="z")return String.fromCodePoint(0x1D41A+c.charCodeAt(0)-97);return c}).join("")}
+var SEP="⊱⋅ ▬▬▬▬▬▬▬▬▬▬▬▬ ⋅⊰";
+function orderText(){
+  var sel=RECIPES.filter(function(r){return state.qty[r.id]>0}),t=totals(),ings=needList(sel);
+  var e=state.entrega?t.custo*ENTREGA_PCT/100:0;
+  var s="◆ ▬▬▬▬▬▬ "+B("Compras Sakura")+" ▬▬▬▬▬▬ ◆\n"+
+    ings.map(function(it){return it.qty+"x "+it.label+(it.price===null?" — sem preço":" — "+euro(it.price*it.qty))}).join("\n")+"\n"+SEP+"\n"+
+    B("Total")+"\nIngredientes: "+euro(t.custo)+(state.entrega?"\nEntrega ("+ENTREGA_PCT+"%): "+euro(e):"")+"\nTotal a pagar: "+euro(t.custo+e)+"\n"+SEP;
+  return "```\n"+s+"\n```";
+}
+function menuText(){
+  var s="◆ ▬▬▬▬▬▬ "+B("Menu Sakura")+" ▬▬▬▬▬▬ ◆\n";
+  FAMS.forEach(function(f){s+=B(f.label)+"\n"+RECIPES.filter(function(r){return r.fam===f.key}).map(function(r){return r.n+" — "+(venda(r)===null?"a definir":euro(venda(r)))}).join("\n")+"\n"+SEP+"\n"});
+  return "```\n"+s.trim()+"\n```";
+}
+function toast(m){var el=document.getElementById("toast");if(!el)return;el.textContent=m;clearTimeout(toast.t);toast.t=setTimeout(function(){el.textContent=""},2500)}
+function copy(txt){
+  function fb(){var ta=document.querySelector("textarea.fb");if(!ta){ta=document.createElement("textarea");ta.className="fb";ta.readOnly=true;document.getElementById("toast").after(ta)}ta.value=txt;ta.select();toast("Seleciona e copia o texto abaixo.")}
+  try{navigator.clipboard.writeText(txt).then(function(){toast("Copiado. Cola no Discord.")},fb)}catch(e){fb()}
+}
 
-  function famSelectedCount(famKey){
-    var n = 0;
-    RECIPES.forEach(function(r){ if (r.fam === famKey && state.qty[r.id] > 0) n++; });
-    return n;
-  }
+function wireModal(){
+  var cb=document.getElementById("mEntrega");
+  if(cb)cb.addEventListener("change",function(){state.entrega=cb.checked;save();renderFooter();openModal()});
+  var c1=document.getElementById("mCopy");if(c1)c1.addEventListener("click",function(){copy(orderText())});
+  var c2=document.getElementById("mCopyMenu");if(c2)c2.addEventListener("click",function(){copy(menuText())});
+}
+function openModal(){document.getElementById("modalBody").innerHTML=buildList();document.getElementById("veil").hidden=false;wireModal()}
+function closeModal(){document.getElementById("veil").hidden=true}
 
-  function renderRecipes(){
-    var wrap = document.getElementById('recipeList');
-    var html = FAM_ORDER.map(function(famKey, idx){
-      var meta = FAM_META[famKey];
-      var items = RECIPES.filter(function(r){ return r.fam === famKey; });
-      var selCount = famSelectedCount(famKey);
-      return (
-        '<details class="fam-section fam-' + famKey + '"' + (idx === 0 ? ' open' : '') + '>' +
-          '<summary style="--fam-color:' + FAM_COLOR[famKey] + '">' +
-            '<span class="fam-dot"></span>' + meta.icon + ' ' + meta.label +
-            ' <span class="fam-count">' + items.length + '</span>' +
-            ' <span class="fam-selected" data-fam="' + famKey + '"' + (selCount === 0 ? ' hidden' : '') + '>' + selCount + ' selecionada' + (selCount === 1 ? '' : 's') + '</span>' +
-            '<span class="fam-chevron">⌄</span>' +
-          '</summary>' +
-          '<div class="drink-grid-wrap"><div class="drink-grid">' + items.map(drinkCardHtml).join('') + '</div></div>' +
-        '</details>'
-      );
-    }).join('');
-    wrap.innerHTML = html;
+function wireGlobal(){
+  document.getElementById("btnLista").addEventListener("click",openModal);
+  document.getElementById("btnClose").addEventListener("click",closeModal);
+  document.getElementById("veil").addEventListener("click",function(e){if(e.target.id==="veil")closeModal()});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeModal()});
+  document.getElementById("btnLimpar").addEventListener("click",function(){RECIPES.forEach(function(r){state.qty[r.id]=0});save();renderRecipes();renderFooter()});
+  document.getElementById("stockSearch").addEventListener("input",function(e){renderStock(e.target.value)});
+  document.getElementById("marginShow").textContent=state.margin+"%";
+}
 
-    document.getElementById('recCount').textContent = RECIPES.length + ' receitas';
+function petals(){var p=document.getElementById("petals");for(var i=0;i<14;i++){var d=document.createElement("span");d.className="petal";
+  d.style.left=Math.random()*100+"%";d.style.animationDuration=(9+Math.random()*10)+"s";d.style.animationDelay=(-Math.random()*18)+"s";
+  d.style.setProperty("--dx",(Math.random()*160-80)+"px");p.appendChild(d)}}
 
-    wrap.querySelectorAll('.drink-card').forEach(function(el){
-      var id = el.getAttribute('data-id');
-      el.querySelector('.qty-dec').addEventListener('click', function(){ setQty(id, state.qty[id] - 1); });
-      el.querySelector('.qty-inc').addEventListener('click', function(){ setQty(id, state.qty[id] + 1); });
-      el.querySelector('.qty-input').addEventListener('input', function(e){ setQty(id, parseInt(e.target.value, 10) || 0, true); });
-    });
-  }
-
-  function updateFamBadge(famKey){
-    var el = document.querySelector('.fam-selected[data-fam="' + famKey + '"]');
-    if (!el) return;
-    var n = famSelectedCount(famKey);
-    el.textContent = n + ' selecionada' + (n === 1 ? '' : 's');
-    el.hidden = n === 0;
-  }
-
-  function setQty(id, val, skipInputSync){
-    if (val < 0) val = 0;
-    state.qty[id] = val;
-    var input = document.getElementById('qty-' + id);
-    if (input) input.value = val;
-    renderRecipeMoney(id);
-    renderFooter();
-    var r = RECIPE_BY_ID[id];
-    if (r) updateFamBadge(r.fam);
-  }
-
-  function renderRecipeMoney(id){
-    var r = RECIPE_BY_ID[id];
-    var el = document.querySelector('.drink-card[data-id="' + id + '"]');
-    if (!r || !el) return;
-    var venda = state.venda[id];
-    el.querySelector('.custo').textContent = euro(r.custoUnit);
-    var lucroEl = el.querySelector('.lucro');
-    if (venda !== null){
-      var lucroUnit = venda - r.custoUnit;
-      lucroEl.className = 'v lucro ' + (lucroUnit >= 0 ? 'pos' : 'neg') + ' tabular';
-      lucroEl.textContent = (lucroUnit >= 0 ? '+' : '') + euro(lucroUnit);
-    } else {
-      lucroEl.className = 'v lucro pending';
-      lucroEl.textContent = 'definir →';
-    }
-  }
-
-  function renderStock(filter){
-    filter = (filter || '').trim().toLowerCase();
-
-    var chipsEl = document.getElementById('stockChips');
-    chipsEl.innerHTML = CATS.map(function(cat){
-      var active = !hiddenCats[cat.key];
-      return '<button type="button" class="cat-chip" data-cat="' + cat.key + '" style="--chip-color:' + cat.color + '" aria-pressed="' + active + '">' + cat.icon + ' ' + cat.label + '</button>';
-    }).join('');
-    chipsEl.querySelectorAll('.cat-chip').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var key = btn.getAttribute('data-cat');
-        hiddenCats[key] = !hiddenCats[key];
-        renderStock(document.getElementById('stockSearch').value);
-      });
-    });
-
-    var scroll = document.getElementById('stockScroll');
-    var html = '';
-    var totalShown = 0;
-    CATS.forEach(function(cat){
-      if (hiddenCats[cat.key]) return;
-      var rows = cat.items.filter(function(it){ return !filter || it[0].toLowerCase().indexOf(filter) !== -1; });
-      if (!rows.length) return;
-      totalShown += rows.length;
-      html += '<div class="stock-cat-head">' + cat.icon + ' ' + cat.label + '</div>';
-      rows.forEach(function(it){
-        html += '<div class="stock-row"><span class="n">' + it[0] + '</span><span class="dots"></span><span class="p tabular">' + euro(it[1]) + '</span></div>';
-      });
-    });
-    if (!html) html = '<p class="empty-note">Nenhum ingrediente encontrado.</p>';
-    scroll.innerHTML = html;
-
-    var totalAll = 0;
-    CATS.forEach(function(c){ totalAll += c.items.length; });
-    document.getElementById('stockCount').textContent = totalShown + ' / ' + totalAll + ' itens';
-  }
-
-  function renderFooter(){
-    var selected = 0, custo = 0, venda = 0, lucro = 0;
-    RECIPES.forEach(function(r){
-      var qty = state.qty[r.id];
-      if (qty > 0) selected++;
-      custo += r.custoUnit * qty;
-      if (state.venda[r.id] !== null){
-        venda += state.venda[r.id] * qty;
-        lucro += (state.venda[r.id] - r.custoUnit) * qty;
-      }
-    });
-    document.getElementById('totSel').textContent = String(selected);
-    document.getElementById('totCusto').textContent = euro(custo);
-    document.getElementById('totVenda').textContent = euro(venda);
-    document.getElementById('totLucro').textContent = (lucro >= 0 ? '+' : '') + euro(lucro);
-  }
-
-  function buildList(){
-    var selectedRecipes = RECIPES.filter(function(r){ return state.qty[r.id] > 0; });
-    if (!selectedRecipes.length){
-      return '<p class="empty-note">Ainda não selecionaste nenhuma quantidade. Usa os botões + nas receitas para começar a lista.</p>';
-    }
-
-    var need = {};
-    selectedRecipes.forEach(function(r){
-      var qty = state.qty[r.id];
-      r.ing.forEach(function(pair){
-        var key = norm(pair[0]);
-        if (!need[key]) need[key] = { label:pair[0], qty:0, price:priceOf(pair[0]) };
-        need[key].qty += pair[1] * qty;
-      });
-    });
-    var needList = Object.keys(need).map(function(k){ return need[k]; })
-      .sort(function(a,b){ return a.label.localeCompare(b.label, 'pt'); });
-
-    var custoTotal = 0, vendaTotal = 0, lucroTotal = 0;
-    var recipeRows = selectedRecipes.map(function(r){
-      var qty = state.qty[r.id];
-      var c = r.custoUnit * qty;
-      custoTotal += c;
-      var vRow = '<td class="num">—</td><td class="num">—</td>';
-      if (state.venda[r.id] !== null){
-        var v = state.venda[r.id] * qty;
-        var l = v - c;
-        vendaTotal += v; lucroTotal += l;
-        vRow = '<td class="num">' + euro(v) + '</td><td class="num">' + (l>=0?'+':'') + euro(l) + '</td>';
-      }
-      return '<tr><td>' + r.icon + ' ' + r.n + '</td><td class="num">' + qty + '</td><td class="num">' + euro(c) + '</td>' + vRow + '</tr>';
-    }).join('');
-
-    var ingRows = needList.map(function(it){
-      var priced = it.price !== null;
-      var sub = priced ? euro(it.price * it.qty) : 'incluído';
-      return '<tr><td>' + it.label + '</td><td class="num">' + it.qty + '</td><td class="num">' + (priced ? euro(it.price) : '—') + '</td><td class="num">' + sub + '</td></tr>';
-    }).join('');
-
-    var entregaOn = !!state.entrega;
-    var entregaValor = entregaOn ? vendaTotal * (ENTREGA_PCT / 100) : 0;
-    var vendaFinal = vendaTotal + entregaValor;
-    var lucroFinal = lucroTotal + entregaValor;
-
-    var entregaStat = entregaOn
-      ? '<span class="hero-stat" style="background:var(--card-2); border-color:var(--line); color:var(--text);">Taxa de entrega <b class="tabular" style="color:var(--coral-deep);">+' + euro(entregaValor) + '</b></span>'
-      : '';
-
-    return (
-      '<div class="modal-section">' +
-        '<h4>Receitas a preparar</h4>' +
-        '<div class="table-wrap"><table class="list-table">' +
-          '<thead><tr><th>Receita</th><th>Qtd</th><th>Custo</th><th>Venda</th><th>Lucro</th></tr></thead>' +
-          '<tbody>' + recipeRows + '</tbody>' +
-        '</table></div>' +
-      '</div>' +
-      '<div class="modal-section">' +
-        '<h4>Ingredientes necessários</h4>' +
-        '<div class="table-wrap"><table class="list-table">' +
-          '<thead><tr><th>Ingrediente</th><th>Qtd</th><th>Preço un.</th><th>Subtotal</th></tr></thead>' +
-          '<tbody>' + ingRows + '</tbody>' +
-        '</table></div>' +
-      '</div>' +
-      '<div class="modal-section">' +
-        '<h4>Entrega</h4>' +
-        '<label class="entrega-toggle">' +
-          '<input type="checkbox" id="modalEntrega"' + (entregaOn ? ' checked' : '') + '> ' +
-          'Entrega ao local <span class="entrega-note">(+' + ENTREGA_PCT + '% sobre o valor de venda)</span>' +
-        '</label>' +
-      '</div>' +
-      '<div class="modal-section">' +
-        '<h4>Totais</h4>' +
-        '<div class="hero-stats" style="margin-top:0;">' +
-          '<span class="hero-stat" style="background:var(--card-2); border-color:var(--line); color:var(--text);">Custo <b class="tabular" style="color:var(--sun-deep);">' + euro(custoTotal) + '</b></span>' +
-          '<span class="hero-stat" style="background:var(--card-2); border-color:var(--line); color:var(--text);">Venda <b class="tabular" style="color:var(--sun-deep);">' + euro(vendaFinal) + '</b></span>' +
-          entregaStat +
-          '<span class="hero-stat" style="background:var(--card-2); border-color:var(--line); color:var(--text);">Lucro <b class="tabular" style="color:var(--good);">' + (lucroFinal>=0?'+':'') + euro(lucroFinal) + '</b></span>' +
-        '</div>' +
-      '</div>'
-    );
-  }
-
-  function renderLaunder(){
-    var valorInput = document.getElementById('launderValor');
-    var rangeInput = document.getElementById('launderPct');
-    var pctInput = document.getElementById('launderPctInput');
-
-    var pctRaw = parseFloat(pctInput.value);
-    if (isNaN(pctRaw)) pctRaw = parseFloat(rangeInput.value);
-    if (isNaN(pctRaw)) pctRaw = 12.5;
-    var pct = pctRaw;
-    if (pct < 10) pct = 10;
-    if (pct > 15) pct = 15;
-
-    rangeInput.value = pct;
-
-    var valor = parseFloat(valorInput.value);
-    if (isNaN(valor) || valor < 0) valor = 0;
-
-    state.launder.valor = valor;
-    state.launder.pct = pct;
-
-    var comissao = valor * (pct / 100);
-    var devolver = valor - comissao;
-    var malas = valor > 0 ? Math.ceil(valor / MALA_SEGURA_VALOR) : 0;
-
-    document.getElementById('launderComissao').textContent = euro(comissao);
-    document.getElementById('launderDevolver').textContent = euro(devolver);
-    document.getElementById('launderMalas').textContent = malas + (malas === 1 ? ' mala' : ' malas');
-  }
-
-  function normalizeLaunderPct(){
-    var pctInput = document.getElementById('launderPctInput');
-    var v = parseFloat(pctInput.value);
-    if (isNaN(v)) v = state.launder.pct || 12.5;
-    if (v < 10) v = 10;
-    if (v > 15) v = 15;
-    pctInput.value = v;
-    renderLaunder();
-  }
-
-  function wireLaunder(){
-    var valorInput = document.getElementById('launderValor');
-    var rangeInput = document.getElementById('launderPct');
-    var pctInput = document.getElementById('launderPctInput');
-
-    if (state.launder.valor) valorInput.value = state.launder.valor;
-    rangeInput.value = state.launder.pct;
-    pctInput.value = state.launder.pct;
-
-    valorInput.addEventListener('input', renderLaunder);
-
-    rangeInput.addEventListener('input', function(){
-      pctInput.value = rangeInput.value;
-      renderLaunder();
-    });
-
-    pctInput.addEventListener('input', renderLaunder);
-    pctInput.addEventListener('blur', normalizeLaunderPct);
-    pctInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') pctInput.blur(); });
-
-    renderLaunder();
-  }
-
-  function wireModalEntrega(){
-    var cb = document.getElementById('modalEntrega');
-    if (!cb) return;
-    cb.addEventListener('change', function(){
-      state.entrega = cb.checked;
-      document.getElementById('modalBody').innerHTML = buildList();
-      wireModalEntrega();
-    });
-  }
-
-  function openModal(){
-    document.getElementById('modalBody').innerHTML = buildList();
-    document.getElementById('modalVeil').hidden = false;
-    wireModalEntrega();
-  }
-  function closeModal(){ document.getElementById('modalVeil').hidden = true; }
-
-  function wireGlobal(){
-    document.getElementById('btnLista').addEventListener('click', openModal);
-    document.getElementById('btnCloseModal').addEventListener('click', closeModal);
-    document.getElementById('modalVeil').addEventListener('click', function(e){ if (e.target.id === 'modalVeil') closeModal(); });
-    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeModal(); });
-    document.getElementById('btnLimpar').addEventListener('click', function(){
-      RECIPES.forEach(function(r){ state.qty[r.id] = 0; });
-      renderRecipes();
-      renderFooter();
-    });
-    document.getElementById('stockSearch').addEventListener('input', function(e){ renderStock(e.target.value); });
-    wireLaunder();
-  }
-
-  function render(){
-    renderHeroStats();
-    renderRecipes();
-    renderStock('');
-    renderFooter();
-  }
-
-  function start(data){
-    restore(data);
-    render();
-    wireGlobal();
-  }
-
-  if (window.claude && window.claude.hot){
-    window.claude.hot.snapshot(snapshot);
-    if (window.claude.hot.ready) window.claude.hot.ready(start);
-    else start(window.claude.hot.data || {});
-  } else {
-    start({});
-  }
+function start(data){
+  var stored=null;try{stored=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+  restore(stored);restore(data);
+  renderHero();renderRecipes();renderStock("");renderFooter();wireGlobal();petals();
+}
+if(window.claude&&window.claude.hot){
+  window.claude.hot.snapshot(snapshot);
+  if(window.claude.hot.ready)window.claude.hot.ready(start);else start(window.claude.hot.data||{});
+}else start({});
 })();
 </script>
+
 </body>
 </html>
