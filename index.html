@@ -193,7 +193,7 @@ textarea.fb{width:100%;height:130px;margin-top:8px;font:12px var(--mono);backgro
       <div class="stock-search"><input type="search" id="stockSearch" placeholder="Procurar ingrediente…" aria-label="Procurar ingrediente"></div>
       <div class="stock-chips" id="stockChips"></div>
       <div class="stock-scroll" id="stockScroll"></div>
-      <p class="note">Preço de venda = custo × (1 + margem), arredondado ao euro para cima. Os ingredientes ainda sem preço aparecem com um campo para os preencheres aqui.</p>
+      <p class="note">Os preços de venda vêm da configuração no código. Os ingredientes ainda sem preço aparecem com um campo para os preencheres aqui.</p>
     </section>
   </main>
 </div>
@@ -234,11 +234,50 @@ textarea.fb{width:100%;height:130px;margin-top:8px;font:12px var(--mono);backgro
    ║  • O nome do ingrediente tem de ser igual nas receitas.          ║
    ╚══════════════════════════════════════════════════════════════════╝ */
 
-var MARGEM_PADRAO = 50;   // % de lucro aplicada a todos os pratos (só se muda aqui)
+var MARGEM_PADRAO = 50;   // % de lucro só para pratos que não estejam em PREÇOS DE VENDA
 var TAXA_ENTREGA  = 10;   // % que a loja cobra para entregar no restaurante
 
 // Categorias compradas noutro sítio: na lista de compras saem num botão de copiar à parte
 var COMPRA_SEPARADA = [ "🐟 Peixe · Parceria" ];
+
+
+/* ---------- PREÇOS DE VENDA (o que o cliente paga por unidade) ----------
+   • Escreve o preço em euros:            "Maki":  330,
+   • Sem preço fixo? Apaga a linha e esse prato passa a usar a MARGEM_PADRAO.
+   • null mostra um campo na página para escreveres o preço lá.          */
+var PRECOS_VENDA = {
+  // 🍣 Sushi
+  "Nigiri":                1300,
+  "Sashimi":               1100,
+  "Maki":                  1300,
+  "Uramaki":               1300,
+  "Temaki":                1300,
+  "Futomaki":              1300,
+  "Gunkan":                1300,
+
+  // 🍤 Pratos quentes
+  "Tempura de camarão":    1300,
+  "Arroz chau-chau":       1300,
+
+  // 🍵 Bebidas
+  "Chá chinês":            1100,
+  "Limonada Caseira":      1100,
+  "Ice Tea Limão":         1100,
+  "Sumol de Laranja":      1100,
+
+  // 🍡 Sobremesas
+  "Mochi de baunilha":     1200,
+  "Mochi de morango":      1200,
+  "Mochi de manga":        1200,
+
+  // ⏱ Consumo automático
+  "Sopa de Cenoura":       5500,
+  "Santali de Pera":       5500,
+
+  // 📦 Caixas
+  "Caixa":                 null,
+
+};
 
 
 /* ---------- INGREDIENTES (preço de compra por unidade) ---------- */
@@ -314,8 +353,7 @@ var FAMILIAS = [
 /* ---------- RECEITAS ----------
    familia:      tem de ser igual a uma das FAMÍLIAS acima (sem o emoji)
    ingredientes: "Nome do ingrediente": quantidade
-   precoVenda:   opcional. Se não puseres, o preço de venda usa a margem.
-                 Um número fixa o preço. null mostra um campo na página.     */
+   O preço de venda de cada receita está em PREÇOS DE VENDA, mais acima.     */
 var RECEITAS = [
 
   // 🍣 Sushi
@@ -384,8 +422,7 @@ var RECEITAS = [
   // 📦 Caixas
   { nome: "Caixa", familia: "Caixas", icone: "📦",
     descricao: "Caixa de cartão. Cada uma permite vender 100 nas zonas de dominação",
-    ingredientes: { "Papelão": 20 },
-    precoVenda: null },
+    ingredientes: { "Papelão": 20 } },
 
 ];
 
@@ -406,7 +443,7 @@ var FAMS = FAMILIAS.map(function(f,i){var h=splitIcon(f);return {key:slugify(h.l
 var RECIPES = RECEITAS.map(function(r){
   var o={id:slugify(r.nome),n:r.nome,d:r.descricao||"",icon:r.icone||"🍽",fam:slugify(r.familia),
     ing:Object.keys(r.ingredientes).map(function(k){return [k,+r.ingredientes[k]]})};
-  if("precoVenda" in r){o.fixedSale=true;o.saleDefault=r.precoVenda;o.saleEditable=r.precoVenda===null}
+  if(r.nome in PRECOS_VENDA){var pv=PRECOS_VENDA[r.nome];o.fixedSale=true;o.saleDefault=pv===null?null:+pv;o.saleEditable=pv===null}
   return o;
 });
 /* Ingredientes usados nas receitas mas que não estão na lista: aparecem com campo para preencher */
@@ -457,6 +494,7 @@ function restore(d){
 }
 function venda(r){if(r.fixedSale){var v=r.saleEditable?custom.sale[r.id]:r.saleDefault;return (v===undefined||v===null||v==="")?null:+v}return Math.ceil(r.custo*(1+(state.margin||0)/100))}
 function vend0(r){return venda(r)||0}
+function usesMargin(){return RECIPES.some(function(r){return !r.fixedSale})}
 
 /* ---------- Render ---------- */
 function renderHero(){
@@ -464,7 +502,7 @@ function renderHero(){
   document.getElementById("heroStats").innerHTML=
     '<span class="pill"><b>'+RECIPES.length+'</b> receitas</span>'+
     '<span class="pill"><b>'+n+'</b> ingredientes usados</span>'+
-    '<span class="pill">Margem <b id="heroMargin">'+state.margin+'%</b></span>';
+    (usesMargin()?'<span class="pill">Margem <b id="heroMargin">'+state.margin+'%</b></span>':'<span class="pill">Preços de venda <b>fixos</b></span>');
 }
 
 function cardHtml(r){
@@ -652,6 +690,7 @@ function wireGlobal(){
   document.getElementById("btnLimpar").addEventListener("click",function(){RECIPES.forEach(function(r){state.qty[r.id]=0});save();renderRecipes();renderFooter()});
   document.getElementById("stockSearch").addEventListener("input",function(e){renderStock(e.target.value)});
   document.getElementById("marginShow").textContent=state.margin+"%";
+  document.getElementById("marginShow").parentNode.hidden=!usesMargin();
 }
 
 function petals(){var p=document.getElementById("petals");for(var i=0;i<14;i++){var d=document.createElement("span");d.className="petal";
